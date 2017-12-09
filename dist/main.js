@@ -124,7 +124,7 @@ var urls = exports.urls = {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(3);
-module.exports = __webpack_require__(5);
+module.exports = __webpack_require__(6);
 
 
 /***/ }),
@@ -171,7 +171,7 @@ var _urls = __webpack_require__(1);
 
 var _domApi = __webpack_require__(0);
 
-var _article = __webpack_require__(7);
+var _article = __webpack_require__(5);
 
 var createRequest = exports.createRequest = function createRequest(url) {
 
@@ -220,13 +220,6 @@ var getItems = exports.getItems = function getItems(url) {
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 6 */,
-/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -244,6 +237,12 @@ var articleElement = exports.articleElement = function articleElement(data) {
     // console.log(ar);
     return ar;
 };
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);
