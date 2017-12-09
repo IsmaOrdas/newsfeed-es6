@@ -1,0 +1,23 @@
+{
+  "name": "news-feed-es6",
+  "version": "1.0.0",
+  "description": "Small demo using the Hacker News public API to put into practice different ES6 concepts and different tools.",
+  "main": "index.html",
+  "scripts": {
+    "build": "webpack"
+  },
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "node-sass": "^4.6.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.8.1"
+  }
+}
