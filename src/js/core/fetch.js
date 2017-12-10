@@ -1,6 +1,7 @@
-import { urls } from "./urls.js";
-import {createEl} from "./core/dom-api.js";
-import { articleElement } from "./components/article.js";
+import { urls } from "../urls.js";
+import {createEl} from "dom-api.js";
+
+let idsList = null;
 
 export const createRequest = (url) => {
     
@@ -24,7 +25,10 @@ export const getIds = (url) => {
     .then((resp) => resp.json())
     .then((data) => data.slice(0, 10))
     .then(function (ids) {
-        // let 
+        idsList = ids;
+        console.log(idsList)
+
+        let lista = document.createElement("ul");
         for (let i = 0; i < ids.length; i++) {
             
             getItems(urls.item(ids[i]));
@@ -47,7 +51,7 @@ export const getItems = (url) => {
     .then((resp) => resp.json())
     .then(function (data) {
         console.log(data)
-        console.log(articleElement(data));
+        // articleElement(data);
         
     })
     .catch(function (err) {
