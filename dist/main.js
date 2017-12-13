@@ -60,31 +60,77 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(1);
-module.exports = __webpack_require__(2);
+"use strict";
 
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var apiHost = "https://hacker-news.firebaseio.com/v0";
+
+var urls = exports.urls = {
+    "topStories": function topStories() {
+        return apiHost + "/topstories.json";
+    },
+    "item": function item(id) {
+        return apiHost + "/item/" + id + ".json";
+    }
+};
 
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(2);
+module.exports = __webpack_require__(6);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
+var _app = __webpack_require__(3);
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOMContentLoaded");
+
+    var appEl = document.getElementById("app");
+    var app = new _app.App(appEl);
+});
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.App = undefined;
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _nav = __webpack_require__(3);
+var _nav = __webpack_require__(4);
+
+var _fetch = __webpack_require__(5);
+
+var _urls = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var App = function () {
+var App = exports.App = function () {
     function App(el) {
         _classCallCheck(this, App);
 
@@ -96,7 +142,16 @@ var App = function () {
     _createClass(App, [{
         key: "init",
         value: function init() {
+            this._initNav();
+            this._getData();
+
             this.events();
+        }
+    }, {
+        key: "_initNav",
+        value: function _initNav() {
+            var navEl = this.app.querySelector("#main-nav");
+            var nav = new _nav.Nav(navEl);
         }
     }, {
         key: "events",
@@ -105,29 +160,18 @@ var App = function () {
                 console.log(ev);
             });
         }
+    }, {
+        key: "_getData",
+        value: function _getData() {
+            (0, _fetch.getIds)(_urls.urls.topStories());
+        }
     }]);
 
     return App;
 }();
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOMContentLoaded");
-
-    var appEl = document.getElementById("app");
-    var app = new App(appEl);
-
-    var navEl = document.getElementById("main-nav");
-    var nav = new _nav.Nav(navEl);
-});
-
 /***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -164,11 +208,11 @@ var Nav = exports.Nav = function () {
             this.links.forEach(function (link) {
 
                 link.addEventListener("click", function (ev) {
+
                     ev.preventDefault();
                     var href = ev.target.getAttribute("href");
                     var event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href });
                     _this.nav.dispatchEvent(event);
-                    console.log("click", event);
                 });
             });
         }
@@ -176,6 +220,135 @@ var Nav = exports.Nav = function () {
 
     return Nav;
 }();
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.getItems = exports.getIds = exports.createRequest = undefined;
+
+var _urls = __webpack_require__(0);
+
+var _domApi = __webpack_require__(7);
+
+var _article = __webpack_require__(8);
+
+var idsList = null;
+
+var createRequest = exports.createRequest = function createRequest(url) {
+
+    return new Request(url, {
+        method: 'GET',
+        mode: 'cors',
+        redirect: 'follow',
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        })
+    });
+};
+
+var getIds = exports.getIds = function getIds(url) {
+    console.log("getIds");
+
+    var request = createRequest(url);
+
+    fetch(request).then(function (resp) {
+        return resp.json();
+    }).then(function (data) {
+        return data.slice(0, 10);
+    }).then(function (ids) {
+        idsList = ids;
+        console.log(idsList);
+
+        var lista = document.createElement("ul");
+        for (var i = 0; i < ids.length; i++) {
+
+            getItems(_urls.urls.item(ids[i]));
+        }
+    }).catch(function (err) {
+        console.log("error");
+    });
+};
+
+var getItems = exports.getItems = function getItems(url) {
+
+    var request = createRequest(url);
+
+    fetch(request).then(function (resp) {
+        return resp.json();
+    }).then(function (data) {
+        console.log(data);
+        console.log((0, _article.articleElement)(data));
+    }).catch(function (err) {
+        console.log("error");
+    });
+};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.createEl = createEl;
+function setAttrs(attrs, el) {
+    Object.keys(attrs).forEach(function (key) {
+        return el.setAttribute(key, attrs[key]);
+    });
+}
+
+function createEl(tagName) {
+
+    return function (attrs, template) {
+
+        var element = document.createElement(tagName);
+        setAttrs(attrs, element);
+
+        if (template && template.length) {
+            template = document.createRange().createContextualFragment(template);
+            element.appendChild(template);
+        }
+
+        return element;
+    };
+}
+
+var article = exports.article = createEl("li");
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.articleElement = undefined;
+
+var _domApi = __webpack_require__(7);
+
+var articleElement = exports.articleElement = function articleElement(data) {
+    var ar = (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\">" + data.title + "</a><div class=\"c-item-info\"><span>points</span><span>by author</span><span>hour ago</span></div>");
+    document.querySelector(".c-list").appendChild(ar);
+};
 
 /***/ })
 /******/ ]);

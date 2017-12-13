@@ -1,5 +1,6 @@
 import { urls } from "../urls.js";
-import {createEl} from "dom-api.js";
+import {createEl} from "./dom-api.js";
+import { articleElement } from "../components/article";
 
 let idsList = null;
 
@@ -18,6 +19,7 @@ export const createRequest = (url) => {
  
 
 export const getIds = (url) => {
+    console.log("getIds");
 
     let request = createRequest(url);
     
@@ -51,7 +53,8 @@ export const getItems = (url) => {
     .then((resp) => resp.json())
     .then(function (data) {
         console.log(data)
-        // articleElement(data);
+        console.log(articleElement(data))
+        
         
     })
     .catch(function (err) {
