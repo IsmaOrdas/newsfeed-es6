@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -88,18 +88,53 @@ var urls = exports.urls = {
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(2);
-module.exports = __webpack_require__(6);
+"use strict";
 
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.createEl = createEl;
+function setAttrs(attrs, el) {
+    Object.keys(attrs).forEach(function (key) {
+        return el.setAttribute(key, attrs[key]);
+    });
+}
+
+function createEl(tagName) {
+
+    return function (attrs, template) {
+
+        var element = document.createElement(tagName);
+        setAttrs(attrs, element);
+
+        if (template && template.length) {
+            template = document.createRange().createContextualFragment(template);
+            element.appendChild(template);
+        }
+
+        return element;
+    };
+}
+
+var article = exports.article = createEl("li");
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(3);
+module.exports = __webpack_require__(8);
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
-var _app = __webpack_require__(3);
+var _app = __webpack_require__(4);
 
 document.addEventListener("DOMContentLoaded", function () {
     console.log("DOMContentLoaded");
@@ -109,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -122,9 +157,9 @@ exports.App = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _nav = __webpack_require__(4);
+var _nav = __webpack_require__(5);
 
-var _fetch = __webpack_require__(5);
+var _fetch = __webpack_require__(6);
 
 var _urls = __webpack_require__(0);
 
@@ -171,7 +206,7 @@ var App = exports.App = function () {
 }();
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -222,7 +257,7 @@ var Nav = exports.Nav = function () {
 }();
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -235,9 +270,9 @@ exports.getItems = exports.getIds = exports.createRequest = undefined;
 
 var _urls = __webpack_require__(0);
 
-var _domApi = __webpack_require__(7);
+var _domApi = __webpack_require__(1);
 
-var _article = __webpack_require__(8);
+var _article = __webpack_require__(7);
 
 var idsList = null;
 
@@ -254,47 +289,42 @@ var createRequest = exports.createRequest = function createRequest(url) {
 };
 
 var getIds = exports.getIds = function getIds(url) {
-    console.log("getIds");
 
     var request = createRequest(url);
 
-    fetch(request).then(function (resp) {
-        return resp.json();
-    }).then(function (data) {
-        return data.slice(0, 10);
-    }).then(function (ids) {
-        idsList = ids;
-        console.log(idsList);
+    fetch(request).then(function (response) {
 
-        var lista = document.createElement("ul");
-        for (var i = 0; i < ids.length; i++) {
-
-            getItems(_urls.urls.item(ids[i]));
+        if (response.status !== 200) {
+            console.log("There was an error: " + response.status);
+            return;
         }
+
+        response.json().then(function (data) {
+            var ids = data.slice(0, 10);
+            getItems(ids);
+        });
     }).catch(function (err) {
-        console.log("error");
+        console.log("error", err);
     });
 };
 
-var getItems = exports.getItems = function getItems(url) {
+var getItems = exports.getItems = function getItems(ids) {
 
-    var request = createRequest(url);
+    ids.map(function (id) {
+        var request = createRequest(_urls.urls.item(id));
 
-    fetch(request).then(function (resp) {
-        return resp.json();
-    }).then(function (data) {
-        console.log(data);
-        console.log((0, _article.articleElement)(data));
-    }).catch(function (err) {
-        console.log("error");
+        fetch(request).then(function (resp) {
+            return resp.json();
+        }).then(function (data) {
+
+            document.querySelector(".c-list").appendChild((0, _article.articleElement)(data));
+        }).then(function () {
+            return document.querySelector(".c-list").classList.add("visible");
+        }).catch(function (err) {
+            console.log("error");
+        });
     });
 };
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ }),
 /* 7 */
@@ -306,49 +336,19 @@ var getItems = exports.getItems = function getItems(url) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.createEl = createEl;
-function setAttrs(attrs, el) {
-    Object.keys(attrs).forEach(function (key) {
-        return el.setAttribute(key, attrs[key]);
-    });
-}
+exports.articleElement = undefined;
 
-function createEl(tagName) {
+var _domApi = __webpack_require__(1);
 
-    return function (attrs, template) {
-
-        var element = document.createElement(tagName);
-        setAttrs(attrs, element);
-
-        if (template && template.length) {
-            template = document.createRange().createContextualFragment(template);
-            element.appendChild(template);
-        }
-
-        return element;
-    };
-}
-
-var article = exports.article = createEl("li");
+var articleElement = exports.articleElement = function articleElement(data) {
+    return (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\">" + data.title + "</a><div class=\"c-item-info\"><span>points</span><span>by author</span><span>hour ago</span></div>");
+};
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.articleElement = undefined;
-
-var _domApi = __webpack_require__(7);
-
-var articleElement = exports.articleElement = function articleElement(data) {
-    var ar = (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\">" + data.title + "</a><div class=\"c-item-info\"><span>points</span><span>by author</span><span>hour ago</span></div>");
-    document.querySelector(".c-list").appendChild(ar);
-};
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

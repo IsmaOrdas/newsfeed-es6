@@ -19,46 +19,48 @@ export const createRequest = (url) => {
  
 
 export const getIds = (url) => {
-    console.log("getIds");
 
     let request = createRequest(url);
     
     fetch(request)
-    .then((resp) => resp.json())
-    .then((data) => data.slice(0, 10))
-    .then(function (ids) {
-        idsList = ids;
-        console.log(idsList)
+    .then((response) => {
 
-        let lista = document.createElement("ul");
-        for (let i = 0; i < ids.length; i++) {
-            
-            getItems(urls.item(ids[i]));
-                        
-        }
-        
+        if (response.status !== 200) {
+            console.log("There was an error: " + response.status)
+            return; 
+        } 
+
+        response.json()
+        .then((data) => {
+            let ids = data.slice(0, 10);
+            getItems(ids);
+        })
+
     })
     .catch(function (err) {
-        console.log("error");
+        console.log("error", err);
     });
     
 }
 
 
-export const getItems = (url) => {
+export const getItems = (ids) => {
 
-    let request = createRequest(url);
+    ids.map(id => {
+        let request = createRequest(urls.item(id));
 
-    fetch(request)
-    .then((resp) => resp.json())
-    .then(function (data) {
-        console.log(data)
-        console.log(articleElement(data))
-        
-        
+        fetch(request)
+        .then((resp) => resp.json())
+        .then((data) => {
+
+            document.querySelector(".c-list").appendChild(articleElement(data));
+
+        })
+        .then(() => document.querySelector(".c-list").classList.add("visible"))
+        .catch(function (err) {
+            console.log("error");
+        });
     })
-    .catch(function (err) {
-        console.log("error");
-    });
+    
 
 }
