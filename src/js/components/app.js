@@ -1,5 +1,5 @@
 import { Nav } from "./nav";
-import { getIds } from "../core/fetch";
+import { getIds, getData } from "../core/fetch";
 import { urls } from "../urls";
 
 export class App {
@@ -15,7 +15,7 @@ export class App {
         this._getData();
             
 
-        this.events();
+        // this.events();
     }
 
     _initNav() {
@@ -24,13 +24,24 @@ export class App {
     }
 
     events() {
-        this.app.addEventListener("route", (ev) => {
-            console.log(ev);
-        });
+
+        window.addEventListener('load', this.router);
+
+        window.addEventListener("popstate", function () {
+            console.log("popstate")
+        }, false);
+
     }
 
     _getData () {
-        getIds(urls.topStories())
+        // getIds(urls.topStories())
+        getData(urls.topStories());
+    }
+
+    router () {
+
+        let url = window.location;
+        console.log(url);
     }
 
 }

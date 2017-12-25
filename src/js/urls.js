@@ -1,7 +1,9 @@
-let apiHost = "https://hacker-news.firebaseio.com/v0";
+let apiHost = "http://node-hnapi.herokuapp.com";
 
 export const urls = {
-    "topStories": () => `${apiHost}/topstories.json`,
-    "item": (id) => `${apiHost}/item/${id}.json`
+    "bestStories": () => `${apiHost}/best`,
+    "topStories": () => `${apiHost}/news`,
+    "newStories": () => `${apiHost}/newest`,
+    "item": (id) => `${apiHost}/item/${id}`
 }
 

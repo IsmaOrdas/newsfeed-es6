@@ -73,14 +73,20 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var apiHost = "https://hacker-news.firebaseio.com/v0";
+var apiHost = "http://node-hnapi.herokuapp.com";
 
 var urls = exports.urls = {
+    "bestStories": function bestStories() {
+        return apiHost + "/best";
+    },
     "topStories": function topStories() {
-        return apiHost + "/topstories.json";
+        return apiHost + "/news";
+    },
+    "newStories": function newStories() {
+        return apiHost + "/newest";
     },
     "item": function item(id) {
-        return apiHost + "/item/" + id + ".json";
+        return apiHost + "/item/" + id;
     }
 };
 
@@ -180,7 +186,7 @@ var App = exports.App = function () {
             this._initNav();
             this._getData();
 
-            this.events();
+            // this.events();
         }
     }, {
         key: "_initNav",
@@ -191,14 +197,25 @@ var App = exports.App = function () {
     }, {
         key: "events",
         value: function events() {
-            this.app.addEventListener("route", function (ev) {
-                console.log(ev);
-            });
+
+            window.addEventListener('load', this.router);
+
+            window.addEventListener("popstate", function () {
+                console.log("popstate");
+            }, false);
         }
     }, {
         key: "_getData",
         value: function _getData() {
-            (0, _fetch.getIds)(_urls.urls.topStories());
+            // getIds(urls.topStories())
+            (0, _fetch.getData)(_urls.urls.topStories());
+        }
+    }, {
+        key: "router",
+        value: function router() {
+
+            var url = window.location;
+            console.log(url);
         }
     }]);
 
@@ -238,7 +255,6 @@ var Nav = exports.Nav = function () {
     }, {
         key: "_events",
         value: function _events() {
-            var _this = this;
 
             this.links.forEach(function (link) {
 
@@ -246,8 +262,11 @@ var Nav = exports.Nav = function () {
 
                     ev.preventDefault();
                     var href = ev.target.getAttribute("href");
-                    var event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href });
-                    _this.nav.dispatchEvent(event);
+
+                    history.pushState({}, "prueba", href);
+
+                    // let event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href})
+                    // this.nav.dispatchEvent(event);
                 });
             });
         }
@@ -266,7 +285,7 @@ var Nav = exports.Nav = function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.getItems = exports.getIds = exports.createRequest = undefined;
+exports.getData = exports.createRequest = undefined;
 
 var _urls = __webpack_require__(0);
 
@@ -288,7 +307,7 @@ var createRequest = exports.createRequest = function createRequest(url) {
     });
 };
 
-var getIds = exports.getIds = function getIds(url) {
+var getData = exports.getData = function getData(url) {
 
     var request = createRequest(url);
 
@@ -301,28 +320,13 @@ var getIds = exports.getIds = function getIds(url) {
 
         response.json().then(function (data) {
             var ids = data.slice(0, 10);
-            getItems(ids);
-        });
+            ids.map(function (id) {
+                console.log(id);
+                document.querySelector(".c-list").appendChild((0, _article.articleElement)(id));
+            });
+        }).then(document.querySelector(".c-list").classList.add("visible"));
     }).catch(function (err) {
         console.log("error", err);
-    });
-};
-
-var getItems = exports.getItems = function getItems(ids) {
-
-    ids.map(function (id) {
-        var request = createRequest(_urls.urls.item(id));
-
-        fetch(request).then(function (resp) {
-            return resp.json();
-        }).then(function (data) {
-
-            document.querySelector(".c-list").appendChild((0, _article.articleElement)(data));
-        }).then(function () {
-            return document.querySelector(".c-list").classList.add("visible");
-        }).catch(function (err) {
-            console.log("error");
-        });
     });
 };
 
@@ -341,6 +345,7 @@ exports.articleElement = undefined;
 var _domApi = __webpack_require__(1);
 
 var articleElement = exports.articleElement = function articleElement(data) {
+    console.log("data", data);
     return (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\">" + data.title + "</a><div class=\"c-item-info\"><span>points</span><span>by author</span><span>hour ago</span></div>");
 };
 

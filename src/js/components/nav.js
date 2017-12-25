@@ -19,8 +19,11 @@ export class Nav {
                 
                 ev.preventDefault();
                 let href = ev.target.getAttribute("href");
-                let event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href})
-                this.nav.dispatchEvent(event);
+
+                history.pushState({}, "prueba", href);
+                
+                // let event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href})
+                // this.nav.dispatchEvent(event);
                 
             });
 
