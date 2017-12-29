@@ -123,6 +123,7 @@ function createEl(tagName) {
     };
 }
 
+var list = exports.list = createEl("ul");
 var article = exports.article = createEl("li");
 
 /***/ }),
@@ -293,8 +294,6 @@ var _domApi = __webpack_require__(1);
 
 var _article = __webpack_require__(7);
 
-var idsList = null;
-
 var createRequest = exports.createRequest = function createRequest(url) {
 
     return new Request(url, {
@@ -309,6 +308,8 @@ var createRequest = exports.createRequest = function createRequest(url) {
 
 var getData = exports.getData = function getData(url) {
 
+    var listEl = (0, _domApi.list)({ "class": "c-list" });
+
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -320,11 +321,14 @@ var getData = exports.getData = function getData(url) {
 
         response.json().then(function (data) {
             var ids = data.slice(0, 10);
+
             ids.map(function (id) {
                 console.log(id);
-                document.querySelector(".c-list").appendChild((0, _article.articleElement)(id));
+                listEl.appendChild((0, _article.articleElement)(id));
             });
-        }).then(document.querySelector(".c-list").classList.add("visible"));
+
+            document.querySelector(".app-content").appendChild(listEl);
+        });
     }).catch(function (err) {
         console.log("error", err);
     });
@@ -345,8 +349,7 @@ exports.articleElement = undefined;
 var _domApi = __webpack_require__(1);
 
 var articleElement = exports.articleElement = function articleElement(data) {
-    console.log("data", data);
-    return (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\">" + data.title + "</a><div class=\"c-item-info\"><span>points</span><span>by author</span><span>hour ago</span></div>");
+    return (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a><div class=\"c-item-info\"><span>" + data.points + " points</span><span>by " + data.user + "</span><span>" + data.time_ago + "</span></div>");
 };
 
 /***/ }),

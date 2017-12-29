@@ -1,8 +1,6 @@
 import { urls } from "../urls.js";
-import {createEl} from "./dom-api.js";
+import { list } from "./dom-api.js";
 import { articleElement } from "../components/article";
-
-let idsList = null;
 
 export const createRequest = (url) => {
     
@@ -19,6 +17,8 @@ export const createRequest = (url) => {
 
 export const getData = (url) => {
 
+    let listEl = list({"class": "c-list"});
+
     let request = createRequest(url);
 
     fetch(request)
@@ -32,12 +32,15 @@ export const getData = (url) => {
         response.json()
         .then((data) => {
             let ids = data.slice(0, 10);
+
             ids.map(id => {
                 console.log(id)
-                document.querySelector(".c-list").appendChild(articleElement(id));
+                listEl.appendChild(articleElement(id));
             });
+
+            document.querySelector(".app-content").appendChild(listEl)
+
         })
-        .then(document.querySelector(".c-list").classList.add("visible"))
 
     })
     .catch(function (err) {

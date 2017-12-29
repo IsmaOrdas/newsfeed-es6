@@ -61,10 +61,8 @@ a {
       padding: 0 20px; }
 
 .c-list {
-  display: none; }
-  .c-list.visible {
-    display: flex;
-    flex-direction: column; }
+  display: flex;
+  flex-direction: column; }
 
 .c-list__item {
   height: 50px; }

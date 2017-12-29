@@ -19,4 +19,5 @@ export function createEl(tagName) {
 
 }
 
+export const list = createEl("ul");
 export const article = createEl("li");
