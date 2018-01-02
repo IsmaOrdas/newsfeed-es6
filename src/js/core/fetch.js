@@ -48,4 +48,35 @@ export const getData = (url) => {
     });
 
 }
+
+
+export const getComments = (url) => {
+    console.log(url);
+
+    let request = createRequest(url);
+
+    fetch(request)
+    .then((response) => {
+
+        if (response.status !== 200) {
+            console.log("There was an error: " + response.status)
+            return;
+        }
+
+        response.json()
+        .then((data) => {
+           
+            console.log(data.comments);
+            data.comments.map((el) => {
+                console.log(el)
+            })
+
+        })
+
+    })
+    .catch(function (err) {
+        console.log("error", err);
+    });
+
+}
  

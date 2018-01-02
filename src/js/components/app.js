@@ -1,11 +1,12 @@
 import { Nav } from "./nav";
-import { getIds, getData } from "../core/fetch";
+import { getComments, getData } from "../core/fetch";
 import { urls } from "../urls";
 
 export class App {
 
     constructor(el) {
         this.app = el;
+        this.contentArea = this.app.querySelector(".app-content");
 
         this.init();
     }
@@ -15,7 +16,7 @@ export class App {
         this._getData();
             
 
-        // this.events();
+        this.events();
     }
 
     _initNav() {
@@ -25,11 +26,21 @@ export class App {
 
     events() {
 
-        window.addEventListener('load', this.router);
+        this.contentArea.addEventListener("click", (ev) => {
+            let element = ev.target;
 
-        window.addEventListener("popstate", function () {
-            console.log("popstate")
-        }, false);
+            if (element.classList.contains("comments-link")) {
+                ev.preventDefault();
+                getComments(element.href)
+            }
+
+        });
+
+        // window.addEventListener('load', this.router);
+
+        // window.addEventListener("popstate", function () {
+        //     console.log("popstate")
+        // }, false);
 
     }
 

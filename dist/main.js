@@ -177,6 +177,7 @@ var App = exports.App = function () {
         _classCallCheck(this, App);
 
         this.app = el;
+        this.contentArea = this.app.querySelector(".app-content");
 
         this.init();
     }
@@ -187,7 +188,7 @@ var App = exports.App = function () {
             this._initNav();
             this._getData();
 
-            // this.events();
+            this.events();
         }
     }, {
         key: "_initNav",
@@ -199,11 +200,20 @@ var App = exports.App = function () {
         key: "events",
         value: function events() {
 
-            window.addEventListener('load', this.router);
+            this.contentArea.addEventListener("click", function (ev) {
+                var element = ev.target;
 
-            window.addEventListener("popstate", function () {
-                console.log("popstate");
-            }, false);
+                if (element.classList.contains("comments-link")) {
+                    ev.preventDefault();
+                    (0, _fetch.getComments)(element.href);
+                }
+            });
+
+            // window.addEventListener('load', this.router);
+
+            // window.addEventListener("popstate", function () {
+            //     console.log("popstate")
+            // }, false);
         }
     }, {
         key: "_getData",
@@ -286,7 +296,7 @@ var Nav = exports.Nav = function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.getData = exports.createRequest = undefined;
+exports.getComments = exports.getData = exports.createRequest = undefined;
 
 var _urls = __webpack_require__(0);
 
@@ -334,6 +344,30 @@ var getData = exports.getData = function getData(url) {
     });
 };
 
+var getComments = exports.getComments = function getComments(url) {
+    console.log(url);
+
+    var request = createRequest(url);
+
+    fetch(request).then(function (response) {
+
+        if (response.status !== 200) {
+            console.log("There was an error: " + response.status);
+            return;
+        }
+
+        response.json().then(function (data) {
+
+            console.log(data.comments);
+            data.comments.map(function (el) {
+                console.log(el);
+            });
+        });
+    }).catch(function (err) {
+        console.log("error", err);
+    });
+};
+
 /***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -348,8 +382,10 @@ exports.articleElement = undefined;
 
 var _domApi = __webpack_require__(1);
 
+var _urls = __webpack_require__(0);
+
 var articleElement = exports.articleElement = function articleElement(data) {
-    return (0, _domApi.article)({ "class": "c-list__item" }, "<a href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a><div class=\"c-item-info\"><span>" + data.points + " points</span><span>by " + data.user + "</span><span>" + data.time_ago + "</span></div>");
+    return (0, _domApi.article)({ "class": "c-list__item" }, "<a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a><div class=\"c-item-info\"><span>" + data.points + " points</span><span>by " + data.user + "</span><span>" + data.time_ago + "</span><span>| <a class=\"comments-link\" href=\"" + _urls.urls.item(data.id) + "\">" + data.comments_count + " comments</a></span></div>");
 };
 
 /***/ }),
