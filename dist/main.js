@@ -131,27 +131,11 @@ var article = exports.article = createEl("li");
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(3);
-module.exports = __webpack_require__(8);
+module.exports = __webpack_require__(7);
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _app = __webpack_require__(4);
-
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOMContentLoaded");
-
-    var appEl = document.getElementById("app");
-    var app = new _app.App(appEl);
-});
-
-/***/ }),
-/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -164,9 +148,9 @@ exports.App = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _nav = __webpack_require__(5);
+var _nav = __webpack_require__(4);
 
-var _fetch = __webpack_require__(6);
+var _fetch = __webpack_require__(5);
 
 var _urls = __webpack_require__(0);
 
@@ -233,8 +217,15 @@ var App = exports.App = function () {
     return App;
 }();
 
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOMContentLoaded");
+
+    var appEl = document.getElementById("app");
+    new App(appEl);
+});
+
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -287,7 +278,7 @@ var Nav = exports.Nav = function () {
 }();
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -302,7 +293,7 @@ var _urls = __webpack_require__(0);
 
 var _domApi = __webpack_require__(1);
 
-var _article = __webpack_require__(7);
+var _article = __webpack_require__(6);
 
 var createRequest = exports.createRequest = function createRequest(url) {
 
@@ -369,7 +360,7 @@ var getComments = exports.getComments = function getComments(url) {
 };
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -389,7 +380,7 @@ var articleElement = exports.articleElement = function articleElement(data) {
 };
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin

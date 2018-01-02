@@ -62,6 +62,9 @@ a {
     flex-direction: row; }
     .main-nav ul li {
       padding-right: 20px; }
+      @media (min-width: 1024px) {
+        .main-nav ul li {
+          padding-right: 30px; } }
 
 .c-list {
   display: flex;
@@ -77,6 +80,9 @@ a {
   .c-list__item .c-item-info {
     color: #777777;
     font-size: 12px; }
+    @media (min-width: 1024px) {
+      .c-list__item .c-item-info {
+        font-size: 14px; } }
   .c-list__item .comments-link {
     color: inherit;
     display: inline-block; }

@@ -1,6 +1,6 @@
-import { Nav } from "./nav";
-import { getComments, getData } from "../core/fetch";
-import { urls } from "../urls";
+import { Nav } from "./components/nav";
+import { getComments, getData } from "./core/fetch";
+import { urls } from "./core/urls";
 
 export class App {
 
@@ -56,3 +56,11 @@ export class App {
     }
 
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("DOMContentLoaded");
+
+    let appEl = document.getElementById("app");
+    new App(appEl);
+
+});

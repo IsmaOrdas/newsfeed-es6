@@ -1,4 +1,4 @@
-import { urls } from "../urls.js";
+import { urls } from "./urls.js";
 import { list } from "./dom-api.js";
 import { articleElement } from "../components/article";
 

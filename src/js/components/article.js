@@ -1,5 +1,5 @@
 import { article } from "../core/dom-api.js";
-import { urls } from "../urls";
+import { urls } from "../core/urls";
 
 export const articleElement = (data) => {
     return article(
