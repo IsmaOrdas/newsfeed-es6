@@ -50,9 +50,6 @@ export const getData = (url) => {
 
 
 export const getComments = (url) => {
-    console.log("getComments")
-    console.log(url);
-
     let listComments = list({ "class": "c-list" });
     let request = createRequest(url);
 
@@ -60,19 +57,17 @@ export const getComments = (url) => {
     .then((response) => {
 
         if (response.status !== 200) {
-            console.log("There was an error: " + response.status)
+            console.log("There was an error fetching comments: " + response.status)
             return;
         }
 
         response.json()
         .then((data) => {
            
-            // console.log(commentElement());
+            console.log(data);
             clearMainView();
-            
+            document.querySelector(".app-content").appendChild(articleElement(data));
             data.comments.map((el) => {
-                // console.log(el.content)
-                commentElement(el)
                 listComments.appendChild(commentElement(el));
             });
 

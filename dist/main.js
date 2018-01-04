@@ -137,7 +137,7 @@ var div = exports.div = createEl("div");
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(3);
-module.exports = __webpack_require__(7);
+module.exports = __webpack_require__(8);
 
 
 /***/ }),
@@ -299,7 +299,7 @@ var _domApi = __webpack_require__(1);
 
 var _article = __webpack_require__(6);
 
-var _comment = __webpack_require__(8);
+var _comment = __webpack_require__(7);
 
 var createRequest = exports.createRequest = function createRequest(url) {
 
@@ -340,27 +340,22 @@ var getData = exports.getData = function getData(url) {
 };
 
 var getComments = exports.getComments = function getComments(url) {
-    console.log("getComments");
-    console.log(url);
-
     var listComments = (0, _domApi.list)({ "class": "c-list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
 
         if (response.status !== 200) {
-            console.log("There was an error: " + response.status);
+            console.log("There was an error fetching comments: " + response.status);
             return;
         }
 
         response.json().then(function (data) {
 
-            // console.log(commentElement());
+            console.log(data);
             (0, _domApi.clearMainView)();
-
+            document.querySelector(".app-content").appendChild((0, _article.articleElement)(data));
             data.comments.map(function (el) {
-                // console.log(el.content)
-                (0, _comment.commentElement)(el);
                 listComments.appendChild((0, _comment.commentElement)(el));
             });
 
@@ -393,12 +388,6 @@ var articleElement = exports.articleElement = function articleElement(data) {
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -412,9 +401,14 @@ exports.commentElement = undefined;
 var _domApi = __webpack_require__(1);
 
 var commentElement = exports.commentElement = function commentElement(data) {
-    console.log("data", data);
     return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"prueba\">\n            <div class=\"autor-time\"><span class=\"author\">" + data.user + "</span><span class=\"time\">" + data.time_ago + "</span></div>\n            <div>" + data.content + "</div>\n        </div>");
 };
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

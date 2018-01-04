@@ -1,7 +1,6 @@
 import { div } from "../core/dom-api.js";
 
 export const commentElement = (data) => {
-    console.log("data", data)
     return div(
         {"class": "c-comment"},
         `<div class="prueba">
