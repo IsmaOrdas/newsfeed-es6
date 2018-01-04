@@ -1,6 +1,7 @@
 import { urls } from "./urls.js";
-import { list } from "./dom-api.js";
+import { list, clearMainView } from "./dom-api.js";
 import { articleElement } from "../components/article";
+import { commentElement } from "../components/comment";
 
 export const createRequest = (url) => {
     
@@ -16,7 +17,6 @@ export const createRequest = (url) => {
 }
 
 export const getData = (url) => {
-
     let listEl = list({"class": "c-list"});
 
     let request = createRequest(url);
@@ -34,7 +34,6 @@ export const getData = (url) => {
             let ids = data.slice(0, 10);
 
             ids.map(id => {
-                console.log(id)
                 listEl.appendChild(articleElement(id));
             });
 
@@ -51,8 +50,10 @@ export const getData = (url) => {
 
 
 export const getComments = (url) => {
+    console.log("getComments")
     console.log(url);
 
+    let listComments = list({ "class": "c-list" });
     let request = createRequest(url);
 
     fetch(request)
@@ -66,10 +67,16 @@ export const getComments = (url) => {
         response.json()
         .then((data) => {
            
-            console.log(data.comments);
+            // console.log(commentElement());
+            clearMainView();
+            
             data.comments.map((el) => {
-                console.log(el)
-            })
+                // console.log(el.content)
+                commentElement(el)
+                listComments.appendChild(commentElement(el));
+            });
+
+            document.querySelector(".app-content").appendChild(listComments);
 
         })
 
@@ -79,4 +86,4 @@ export const getComments = (url) => {
     });
 
 }
- 
+

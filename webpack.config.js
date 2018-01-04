@@ -5,7 +5,6 @@ module.exports = {
     watch: true,
     entry: {
         main: ['./src/js/app.js','./src/sass/main.sass'],
-        // components: './src/js/components/components.js'
     },
     output: {
         path: path.resolve(__dirname, "dist"),

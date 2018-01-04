@@ -46,6 +46,15 @@ a {
   grid-column: 1 / 2;
   padding: 20px; }
 
+.c-comment {
+  border-bottom: 1px solid;
+  margin-bottom: 20px; }
+  .c-comment .autor-time {
+    color: #777777;
+    font-size: 13px; }
+  .c-comment .author {
+    padding-right: 5px; }
+
 .main-nav {
   align-items: baseline;
   background: #607d8b;

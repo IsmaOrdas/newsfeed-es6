@@ -15,7 +15,6 @@ export class App {
         this._initNav();
         this._getData();
             
-
         this.events();
     }
 
@@ -45,17 +44,18 @@ export class App {
     }
 
     _getData () {
-        // getIds(urls.topStories())
         getData(urls.topStories());
     }
 
     router () {
 
         let url = window.location;
-        console.log(url);
     }
 
 }
+
+
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("DOMContentLoaded");

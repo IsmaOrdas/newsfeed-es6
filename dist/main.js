@@ -101,6 +101,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.createEl = createEl;
+exports.clearMainView = clearMainView;
 function setAttrs(attrs, el) {
     Object.keys(attrs).forEach(function (key) {
         return el.setAttribute(key, attrs[key]);
@@ -123,8 +124,13 @@ function createEl(tagName) {
     };
 }
 
+function clearMainView() {
+    document.querySelector(".app-content").innerHTML = "";
+}
+
 var list = exports.list = createEl("ul");
 var article = exports.article = createEl("li");
+var div = exports.div = createEl("div");
 
 /***/ }),
 /* 2 */
@@ -202,7 +208,6 @@ var App = exports.App = function () {
     }, {
         key: "_getData",
         value: function _getData() {
-            // getIds(urls.topStories())
             (0, _fetch.getData)(_urls.urls.topStories());
         }
     }, {
@@ -210,7 +215,6 @@ var App = exports.App = function () {
         value: function router() {
 
             var url = window.location;
-            console.log(url);
         }
     }]);
 
@@ -295,6 +299,8 @@ var _domApi = __webpack_require__(1);
 
 var _article = __webpack_require__(6);
 
+var _comment = __webpack_require__(8);
+
 var createRequest = exports.createRequest = function createRequest(url) {
 
     return new Request(url, {
@@ -308,7 +314,6 @@ var createRequest = exports.createRequest = function createRequest(url) {
 };
 
 var getData = exports.getData = function getData(url) {
-
     var listEl = (0, _domApi.list)({ "class": "c-list" });
 
     var request = createRequest(url);
@@ -324,7 +329,6 @@ var getData = exports.getData = function getData(url) {
             var ids = data.slice(0, 10);
 
             ids.map(function (id) {
-                console.log(id);
                 listEl.appendChild((0, _article.articleElement)(id));
             });
 
@@ -336,8 +340,10 @@ var getData = exports.getData = function getData(url) {
 };
 
 var getComments = exports.getComments = function getComments(url) {
+    console.log("getComments");
     console.log(url);
 
+    var listComments = (0, _domApi.list)({ "class": "c-list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -349,10 +355,16 @@ var getComments = exports.getComments = function getComments(url) {
 
         response.json().then(function (data) {
 
-            console.log(data.comments);
+            // console.log(commentElement());
+            (0, _domApi.clearMainView)();
+
             data.comments.map(function (el) {
-                console.log(el);
+                // console.log(el.content)
+                (0, _comment.commentElement)(el);
+                listComments.appendChild((0, _comment.commentElement)(el));
             });
+
+            document.querySelector(".app-content").appendChild(listComments);
         });
     }).catch(function (err) {
         console.log("error", err);
@@ -384,6 +396,25 @@ var articleElement = exports.articleElement = function articleElement(data) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.commentElement = undefined;
+
+var _domApi = __webpack_require__(1);
+
+var commentElement = exports.commentElement = function commentElement(data) {
+    console.log("data", data);
+    return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"prueba\">\n            <div class=\"autor-time\"><span class=\"author\">" + data.user + "</span><span class=\"time\">" + data.time_ago + "</span></div>\n            <div>" + data.content + "</div>\n        </div>");
+};
 
 /***/ })
 /******/ ]);
