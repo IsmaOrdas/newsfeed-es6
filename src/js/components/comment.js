@@ -1,5 +1,9 @@
 import { div } from "../core/dom-api.js";
 
+export const commentsPage = () => {
+    return div({"class": "comments-page"}, null);
+}
+
 export const commentElement = (data) => {
     return div(
         {"class": "c-comment"},

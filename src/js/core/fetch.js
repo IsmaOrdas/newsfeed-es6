@@ -1,7 +1,8 @@
 import { urls } from "./urls.js";
-import { list, clearMainView } from "./dom-api.js";
+import { list, clearMainView, div } from "./dom-api.js";
 import { articleElement } from "../components/article";
-import { commentElement } from "../components/comment";
+import { commentElement, commentsPage } from "../components/comment";
+
 
 export const createRequest = (url) => {
     
@@ -17,10 +18,9 @@ export const createRequest = (url) => {
 }
 
 export const getData = (url) => {
-    let listEl = list({"class": "c-list"});
-
+    let listEl = div({"class": "c-list"});
     let request = createRequest(url);
-
+    
     fetch(request)
     .then((response) => {
 
@@ -31,9 +31,8 @@ export const getData = (url) => {
 
         response.json()
         .then((data) => {
-            let ids = data.slice(0, 10);
-
-            ids.map(id => {
+            console.log(data)
+            data.map(id => {
                 listEl.appendChild(articleElement(id));
             });
 
@@ -64,14 +63,17 @@ export const getComments = (url) => {
         response.json()
         .then((data) => {
            
-            console.log(data);
             clearMainView();
-            document.querySelector(".app-content").appendChild(articleElement(data));
+            let wrap = commentsPage();
+            wrap.appendChild(articleElement(data));
+            // document.querySelector(".app-content").appendChild(articleElement(data));
+
             data.comments.map((el) => {
                 listComments.appendChild(commentElement(el));
             });
+            wrap.appendChild(listComments);
 
-            document.querySelector(".app-content").appendChild(listComments);
+            document.querySelector(".app-content").appendChild(wrap);
 
         })
 

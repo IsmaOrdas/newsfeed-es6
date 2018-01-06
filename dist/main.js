@@ -129,7 +129,7 @@ function clearMainView() {
 }
 
 var list = exports.list = createEl("ul");
-var article = exports.article = createEl("li");
+var article = exports.article = createEl("article");
 var div = exports.div = createEl("div");
 
 /***/ }),
@@ -195,6 +195,7 @@ var App = exports.App = function () {
 
                 if (element.classList.contains("comments-link")) {
                     ev.preventDefault();
+                    history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
                     (0, _fetch.getComments)(element.href);
                 }
             });
@@ -222,7 +223,6 @@ var App = exports.App = function () {
 }();
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOMContentLoaded");
 
     var appEl = document.getElementById("app");
     new App(appEl);
@@ -314,8 +314,7 @@ var createRequest = exports.createRequest = function createRequest(url) {
 };
 
 var getData = exports.getData = function getData(url) {
-    var listEl = (0, _domApi.list)({ "class": "c-list" });
-
+    var listEl = (0, _domApi.div)({ "class": "c-list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -326,9 +325,8 @@ var getData = exports.getData = function getData(url) {
         }
 
         response.json().then(function (data) {
-            var ids = data.slice(0, 10);
-
-            ids.map(function (id) {
+            console.log(data);
+            data.map(function (id) {
                 listEl.appendChild((0, _article.articleElement)(id));
             });
 
@@ -352,14 +350,17 @@ var getComments = exports.getComments = function getComments(url) {
 
         response.json().then(function (data) {
 
-            console.log(data);
             (0, _domApi.clearMainView)();
-            document.querySelector(".app-content").appendChild((0, _article.articleElement)(data));
+            var wrap = (0, _comment.commentsPage)();
+            wrap.appendChild((0, _article.articleElement)(data));
+            // document.querySelector(".app-content").appendChild(articleElement(data));
+
             data.comments.map(function (el) {
                 listComments.appendChild((0, _comment.commentElement)(el));
             });
+            wrap.appendChild(listComments);
 
-            document.querySelector(".app-content").appendChild(listComments);
+            document.querySelector(".app-content").appendChild(wrap);
         });
     }).catch(function (err) {
         console.log("error", err);
@@ -383,7 +384,7 @@ var _domApi = __webpack_require__(1);
 var _urls = __webpack_require__(0);
 
 var articleElement = exports.articleElement = function articleElement(data) {
-    return (0, _domApi.article)({ "class": "c-list__item" }, "<a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a><div class=\"c-item-info\"><span>" + data.points + " points</span><span>by " + data.user + "</span><span>" + data.time_ago + "</span><span>| <a class=\"comments-link\" href=\"" + _urls.urls.item(data.id) + "\">" + data.comments_count + " comments</a></span></div>");
+    return (0, _domApi.article)({ "class": "c-list__story", "data-item": data.id }, "<div class=\"domain-info\">\n            <a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"domain\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-item-info\">\n            <span>" + data.points + " points</span>\n            <span>by " + data.user + "</span><span>" + data.time_ago + "</span>\n            <span>| <a class=\"comments-link\" data-item=\"" + data.id + "\" href=\"" + _urls.urls.item(data.id) + "\">" + data.comments_count + " comments</a></span>\n        </div>");
 };
 
 /***/ }),
@@ -396,9 +397,13 @@ var articleElement = exports.articleElement = function articleElement(data) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.commentElement = undefined;
+exports.commentElement = exports.commentsPage = undefined;
 
 var _domApi = __webpack_require__(1);
+
+var commentsPage = exports.commentsPage = function commentsPage() {
+    return (0, _domApi.div)({ "class": "comments-page" }, null);
+};
 
 var commentElement = exports.commentElement = function commentElement(data) {
     return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"prueba\">\n            <div class=\"autor-time\"><span class=\"author\">" + data.user + "</span><span class=\"time\">" + data.time_ago + "</span></div>\n            <div>" + data.content + "</div>\n        </div>");

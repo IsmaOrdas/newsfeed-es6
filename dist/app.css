@@ -79,21 +79,24 @@ a {
   display: flex;
   flex-direction: column; }
 
-.c-list__item {
+.c-list__story {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px; }
-  .c-list__item .title-link {
-    display: block;
+  .c-list__story .title-link {
+    display: inline-block;
     margin-bottom: 5px; }
-  .c-list__item .c-item-info {
+  .c-list__story .domain {
+    color: #777777;
+    font-size: 14px; }
+  .c-list__story .c-item-info {
     color: #777777;
     font-size: 12px; }
     @media (min-width: 1024px) {
-      .c-list__item .c-item-info {
+      .c-list__story .c-item-info {
         font-size: 14px; } }
-  .c-list__item .comments-link {
+  .c-list__story .comments-link {
     color: inherit;
     display: inline-block; }
-  .c-list__item span {
+  .c-list__story span {
     margin-right: 10px; }

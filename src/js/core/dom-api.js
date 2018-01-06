@@ -24,5 +24,5 @@ export function clearMainView() {
 }
 
 export const list = createEl("ul");
-export const article = createEl("li");
+export const article = createEl("article");
 export const div = createEl("div");

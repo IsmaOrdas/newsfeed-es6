@@ -30,6 +30,7 @@ export class App {
 
             if (element.classList.contains("comments-link")) {
                 ev.preventDefault();
+                history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
                 getComments(element.href)
             }
 
@@ -58,7 +59,6 @@ export class App {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOMContentLoaded");
 
     let appEl = document.getElementById("app");
     new App(appEl);
