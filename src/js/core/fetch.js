@@ -32,6 +32,7 @@ export const getData = (url) => {
         response.json()
         .then((data) => {
             console.log(data)
+            clearMainView();
             data.map(id => {
                 listEl.appendChild(articleElement(id));
             });

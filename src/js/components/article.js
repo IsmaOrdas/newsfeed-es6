@@ -11,7 +11,7 @@ export const articleElement = (data) => {
         <div class="c-item-info">
             <span>${data.points} points</span>
             <span>by ${data.user}</span><span>${data.time_ago}</span>
-            <span>| <a class="comments-link" data-item="${data.id}" href="${urls.item(data.id)}">${data.comments_count} comments</a></span>
+            <span>| <a class="comments-link" data-item="${data.id}" href="/item/${data.id}">${data.comments_count} comments</a></span>
         </div>`
     );
 }

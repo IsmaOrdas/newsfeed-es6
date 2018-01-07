@@ -31,16 +31,17 @@ export class App {
             if (element.classList.contains("comments-link")) {
                 ev.preventDefault();
                 history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
-                getComments(element.href)
+                console.log(element.href)
+                getComments(urls.item(element.getAttribute("data-item")))
             }
 
         });
 
         // window.addEventListener('load', this.router);
 
-        // window.addEventListener("popstate", function () {
-        //     console.log("popstate")
-        // }, false);
+        
+
+        window.addEventListener("popstate", this.router, false);
 
     }
 
@@ -49,8 +50,17 @@ export class App {
     }
 
     router () {
+        let url = window.location.pathname;
 
-        let url = window.location;
+        if (url === "/") {
+            console.log("si");
+            getData(urls.topStories());
+        } else if (url.includes("item")) {
+            let position = url.substr(url.lastIndexOf("/") + 1);
+
+
+        }
+
     }
 
 }

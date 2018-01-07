@@ -196,15 +196,15 @@ var App = exports.App = function () {
                 if (element.classList.contains("comments-link")) {
                     ev.preventDefault();
                     history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
-                    (0, _fetch.getComments)(element.href);
+                    console.log(element.href);
+                    (0, _fetch.getComments)(_urls.urls.item(element.getAttribute("data-item")));
                 }
             });
 
             // window.addEventListener('load', this.router);
 
-            // window.addEventListener("popstate", function () {
-            //     console.log("popstate")
-            // }, false);
+
+            window.addEventListener("popstate", this.router, false);
         }
     }, {
         key: "_getData",
@@ -214,8 +214,14 @@ var App = exports.App = function () {
     }, {
         key: "router",
         value: function router() {
+            var url = window.location.pathname;
 
-            var url = window.location;
+            if (url === "/") {
+                console.log("si");
+                (0, _fetch.getData)(_urls.urls.topStories());
+            } else if (url.includes("item")) {
+                var position = url.substr(url.lastIndexOf("/") + 1);
+            }
         }
     }]);
 
@@ -326,6 +332,7 @@ var getData = exports.getData = function getData(url) {
 
         response.json().then(function (data) {
             console.log(data);
+            (0, _domApi.clearMainView)();
             data.map(function (id) {
                 listEl.appendChild((0, _article.articleElement)(id));
             });
@@ -384,7 +391,7 @@ var _domApi = __webpack_require__(1);
 var _urls = __webpack_require__(0);
 
 var articleElement = exports.articleElement = function articleElement(data) {
-    return (0, _domApi.article)({ "class": "c-list__story", "data-item": data.id }, "<div class=\"domain-info\">\n            <a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"domain\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-item-info\">\n            <span>" + data.points + " points</span>\n            <span>by " + data.user + "</span><span>" + data.time_ago + "</span>\n            <span>| <a class=\"comments-link\" data-item=\"" + data.id + "\" href=\"" + _urls.urls.item(data.id) + "\">" + data.comments_count + " comments</a></span>\n        </div>");
+    return (0, _domApi.article)({ "class": "c-list__story", "data-item": data.id }, "<div class=\"domain-info\">\n            <a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"domain\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-item-info\">\n            <span>" + data.points + " points</span>\n            <span>by " + data.user + "</span><span>" + data.time_ago + "</span>\n            <span>| <a class=\"comments-link\" data-item=\"" + data.id + "\" href=\"/item/" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
 };
 
 /***/ }),
