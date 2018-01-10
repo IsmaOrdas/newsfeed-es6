@@ -7,7 +7,10 @@ export function createEl(tagName) {
     return (attrs, template) => {
         
         let element = document.createElement(tagName);
-        setAttrs(attrs, element);
+        
+        if (attrs) {
+            setAttrs(attrs, element);
+        }
         
         if (template && template.length) {
             template = document.createRange().createContextualFragment(template);
@@ -26,3 +29,4 @@ export function clearMainView() {
 export const list = createEl("ul");
 export const article = createEl("article");
 export const div = createEl("div");
+export const boton = createEl("button");

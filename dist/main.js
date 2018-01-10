@@ -113,7 +113,10 @@ function createEl(tagName) {
     return function (attrs, template) {
 
         var element = document.createElement(tagName);
-        setAttrs(attrs, element);
+
+        if (attrs) {
+            setAttrs(attrs, element);
+        }
 
         if (template && template.length) {
             template = document.createRange().createContextualFragment(template);
@@ -131,6 +134,7 @@ function clearMainView() {
 var list = exports.list = createEl("ul");
 var article = exports.article = createEl("article");
 var div = exports.div = createEl("div");
+var boton = exports.boton = createEl("button");
 
 /***/ }),
 /* 2 */
@@ -331,7 +335,9 @@ var getData = exports.getData = function getData(url) {
         }
 
         response.json().then(function (data) {
+
             console.log(data);
+
             (0, _domApi.clearMainView)();
             data.map(function (id) {
                 listEl.appendChild((0, _article.articleElement)(id));

@@ -1,5 +1,5 @@
 import { urls } from "./urls.js";
-import { list, clearMainView, div } from "./dom-api.js";
+import { list, clearMainView, div, boton } from "./dom-api.js";
 import { articleElement } from "../components/article";
 import { commentElement, commentsPage } from "../components/comment";
 
@@ -31,14 +31,16 @@ export const getData = (url) => {
 
         response.json()
         .then((data) => {
-            console.log(data)
+
+            console.log(data);
+
             clearMainView();
             data.map(id => {
                 listEl.appendChild(articleElement(id));
             });
 
-            document.querySelector(".app-content").appendChild(listEl)
-
+            document.querySelector(".app-content").appendChild(listEl);
+            
         })
 
     })
