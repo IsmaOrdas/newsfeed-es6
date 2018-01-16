@@ -1,19 +1,28 @@
-import { Nav } from "./components/nav";
+import { Header } from "./components/header";
 import { getComments, getData } from "./core/fetch";
 import { urls } from "./core/urls";
+import { createEl } from "./core/dom-api";
 
 export class App {
 
-    constructor(el) {
-        this.app = el;
+    constructor(container) {
+        this.app = container;
         this.contentArea = this.app.querySelector(".app-content");
-
         this.init();
     }
 
     init() {
-        this._initNav();
-        this._getData();
+        let head = new Header();
+        this.app.appendChild(head.createHeader());
+
+        this.app.insertBefore(head.createHeader(), this.app.querySelector(".app-content"));
+        
+        this._getData(1, false);
+        
+        // this.app.classList.add("visible")
+        
+        // this._initNav();
+        // this._getData(1, true);
             
         this.events();
     }
@@ -31,8 +40,11 @@ export class App {
             if (element.classList.contains("comments-link")) {
                 ev.preventDefault();
                 history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
-                console.log(element.href)
                 getComments(urls.item(element.getAttribute("data-item")))
+            }
+
+            if (element.classList.contains("load-more")) {
+                this._getData(2, false)
             }
 
         });
@@ -45,8 +57,8 @@ export class App {
 
     }
 
-    _getData () {
-        getData(urls.topStories());
+    _getData (page, clearView) {
+        getData(urls.topStories(page), clearView);
     }
 
     router () {
@@ -54,11 +66,9 @@ export class App {
 
         if (url === "/") {
             console.log("si");
-            getData(urls.topStories());
+            this._getData(1);
         } else if (url.includes("item")) {
             let position = url.substr(url.lastIndexOf("/") + 1);
-
-
         }
 
     }
@@ -70,7 +80,6 @@ export class App {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    let appEl = document.getElementById("app");
-    new App(appEl);
+    new App(document.getElementById("app"));
 
 });

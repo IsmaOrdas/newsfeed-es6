@@ -73,33 +73,6 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-var apiHost = "http://node-hnapi.herokuapp.com";
-
-var urls = exports.urls = {
-    "bestStories": function bestStories() {
-        return apiHost + "/best";
-    },
-    "topStories": function topStories() {
-        return apiHost + "/news";
-    },
-    "newStories": function newStories() {
-        return apiHost + "/newest";
-    },
-    "item": function item(id) {
-        return apiHost + "/item/" + id;
-    }
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 exports.createEl = createEl;
 exports.clearMainView = clearMainView;
 function setAttrs(attrs, el) {
@@ -128,13 +101,42 @@ function createEl(tagName) {
 }
 
 function clearMainView() {
+    console.log("clear");
     document.querySelector(".app-content").innerHTML = "";
 }
 
+var header = exports.header = createEl("header");
 var list = exports.list = createEl("ul");
 var article = exports.article = createEl("article");
 var div = exports.div = createEl("div");
 var boton = exports.boton = createEl("button");
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var apiHost = "http://node-hnapi.herokuapp.com";
+
+var urls = exports.urls = {
+    "bestStories": function bestStories() {
+        return apiHost + "/best";
+    },
+    "topStories": function topStories(page) {
+        return apiHost + "/news?page=" + page;
+    },
+    "newStories": function newStories() {
+        return apiHost + "/newest";
+    },
+    "item": function item(id) {
+        return apiHost + "/item/" + id;
+    }
+};
 
 /***/ }),
 /* 2 */
@@ -158,29 +160,39 @@ exports.App = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _nav = __webpack_require__(4);
+var _header = __webpack_require__(4);
 
 var _fetch = __webpack_require__(5);
 
-var _urls = __webpack_require__(0);
+var _urls = __webpack_require__(1);
+
+var _domApi = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var App = exports.App = function () {
-    function App(el) {
+    function App(container) {
         _classCallCheck(this, App);
 
-        this.app = el;
+        this.app = container;
         this.contentArea = this.app.querySelector(".app-content");
-
         this.init();
     }
 
     _createClass(App, [{
         key: "init",
         value: function init() {
-            this._initNav();
-            this._getData();
+            var head = new _header.Header();
+            this.app.appendChild(head.createHeader());
+
+            this.app.insertBefore(head.createHeader(), this.app.querySelector(".app-content"));
+
+            this._getData(1, false);
+
+            // this.app.classList.add("visible")
+
+            // this._initNav();
+            // this._getData(1, true);
 
             this.events();
         }
@@ -188,11 +200,12 @@ var App = exports.App = function () {
         key: "_initNav",
         value: function _initNav() {
             var navEl = this.app.querySelector("#main-nav");
-            var nav = new _nav.Nav(navEl);
+            var nav = new Nav(navEl);
         }
     }, {
         key: "events",
         value: function events() {
+            var _this = this;
 
             this.contentArea.addEventListener("click", function (ev) {
                 var element = ev.target;
@@ -200,8 +213,11 @@ var App = exports.App = function () {
                 if (element.classList.contains("comments-link")) {
                     ev.preventDefault();
                     history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
-                    console.log(element.href);
                     (0, _fetch.getComments)(_urls.urls.item(element.getAttribute("data-item")));
+                }
+
+                if (element.classList.contains("load-more")) {
+                    _this._getData(2, false);
                 }
             });
 
@@ -212,8 +228,8 @@ var App = exports.App = function () {
         }
     }, {
         key: "_getData",
-        value: function _getData() {
-            (0, _fetch.getData)(_urls.urls.topStories());
+        value: function _getData(page, clearView) {
+            (0, _fetch.getData)(_urls.urls.topStories(page), clearView);
         }
     }, {
         key: "router",
@@ -222,7 +238,7 @@ var App = exports.App = function () {
 
             if (url === "/") {
                 console.log("si");
-                (0, _fetch.getData)(_urls.urls.topStories());
+                this._getData(1);
             } else if (url.includes("item")) {
                 var position = url.substr(url.lastIndexOf("/") + 1);
             }
@@ -234,8 +250,7 @@ var App = exports.App = function () {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    var appEl = document.getElementById("app");
-    new App(appEl);
+    new App(document.getElementById("app"));
 });
 
 /***/ }),
@@ -248,47 +263,35 @@ document.addEventListener("DOMContentLoaded", function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Header = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _domApi = __webpack_require__(0);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Nav = exports.Nav = function () {
-    function Nav(el) {
-        _classCallCheck(this, Nav);
+var Header = exports.Header = function () {
+    function Header() {
+        _classCallCheck(this, Header);
 
-        this.nav = el;
-        this.links = this.nav.querySelectorAll(".nav-link");
-
-        this.init();
+        console.log("header");
     }
 
-    _createClass(Nav, [{
-        key: "init",
-        value: function init() {
-            this._events();
+    _createClass(Header, [{
+        key: "createHeader",
+        value: function createHeader() {
+            var headerEl = (0, _domApi.header)({ "class": "app-header" }, this.getHeaderTemplate());
+            return headerEl;
         }
     }, {
-        key: "_events",
-        value: function _events() {
-
-            this.links.forEach(function (link) {
-
-                link.addEventListener("click", function (ev) {
-
-                    ev.preventDefault();
-                    var href = ev.target.getAttribute("href");
-
-                    history.pushState({}, "prueba", href);
-
-                    // let event = new CustomEvent("route", { bubbles: true, cancelable: true, detail: href})
-                    // this.nav.dispatchEvent(event);
-                });
-            });
+        key: "getHeaderTemplate",
+        value: function getHeaderTemplate() {
+            return "<nav id=\"main-nav\" class=\"main-nav\">\n            <h1>HN</h1>\n            <div class=\"wrap-nav-links\">\n                <ul >\n                    <li><a class=\"nav-link\" href=\"#new\">new</a></li>\n                    <li><a class=\"nav-link\" href=\"#top\">top</a></li>\n                    <li><a class=\"nav-link\" href=\"#best\">best</a></li>\n                </ul>\n            </div>\n        </nav>";
         }
     }]);
 
-    return Nav;
+    return Header;
 }();
 
 /***/ }),
@@ -303,9 +306,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getComments = exports.getData = exports.createRequest = undefined;
 
-var _urls = __webpack_require__(0);
+var _urls = __webpack_require__(1);
 
-var _domApi = __webpack_require__(1);
+var _domApi = __webpack_require__(0);
 
 var _article = __webpack_require__(6);
 
@@ -324,6 +327,8 @@ var createRequest = exports.createRequest = function createRequest(url) {
 };
 
 var getData = exports.getData = function getData(url) {
+    var clearView = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
     var listEl = (0, _domApi.div)({ "class": "c-list" });
     var request = createRequest(url);
 
@@ -337,13 +342,23 @@ var getData = exports.getData = function getData(url) {
         response.json().then(function (data) {
 
             console.log(data);
+            var appContentWrap = document.querySelector(".app-content");
 
-            (0, _domApi.clearMainView)();
+            var button = (0, _domApi.createEl)("button")({ "class": "load-more" });
+            button.textContent = "Load more";
+
+            clearView && (0, _domApi.clearMainView)();
+
             data.map(function (id) {
                 listEl.appendChild((0, _article.articleElement)(id));
             });
 
-            document.querySelector(".app-content").appendChild(listEl);
+            if (appContentWrap.querySelector(".load-more")) {
+                appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
+            } else {
+                appContentWrap.appendChild(listEl);
+                appContentWrap.appendChild(button);
+            }
         });
     }).catch(function (err) {
         console.log("error", err);
@@ -392,9 +407,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.articleElement = undefined;
 
-var _domApi = __webpack_require__(1);
+var _domApi = __webpack_require__(0);
 
-var _urls = __webpack_require__(0);
+var _urls = __webpack_require__(1);
 
 var articleElement = exports.articleElement = function articleElement(data) {
     return (0, _domApi.article)({ "class": "c-list__story", "data-item": data.id }, "<div class=\"domain-info\">\n            <a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"domain\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-item-info\">\n            <span>" + data.points + " points</span>\n            <span>by " + data.user + "</span><span>" + data.time_ago + "</span>\n            <span>| <a class=\"comments-link\" data-item=\"" + data.id + "\" href=\"/item/" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
@@ -412,7 +427,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.commentElement = exports.commentsPage = undefined;
 
-var _domApi = __webpack_require__(1);
+var _domApi = __webpack_require__(0);
 
 var commentsPage = exports.commentsPage = function commentsPage() {
     return (0, _domApi.div)({ "class": "comments-page" }, null);

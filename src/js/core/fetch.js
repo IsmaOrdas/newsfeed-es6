@@ -1,5 +1,5 @@
 import { urls } from "./urls.js";
-import { list, clearMainView, div, boton } from "./dom-api.js";
+import { list, clearMainView, div, boton, createEl } from "./dom-api.js";
 import { articleElement } from "../components/article";
 import { commentElement, commentsPage } from "../components/comment";
 
@@ -17,7 +17,7 @@ export const createRequest = (url) => {
 
 }
 
-export const getData = (url) => {
+export const getData = (url, clearView = false) => {
     let listEl = div({"class": "c-list"});
     let request = createRequest(url);
     
@@ -33,13 +33,23 @@ export const getData = (url) => {
         .then((data) => {
 
             console.log(data);
+            let appContentWrap = document.querySelector(".app-content");
 
-            clearMainView();
+            let button = createEl("button")({"class": "load-more"});
+            button.textContent = "Load more";
+
+            clearView && clearMainView();
+
             data.map(id => {
                 listEl.appendChild(articleElement(id));
             });
 
-            document.querySelector(".app-content").appendChild(listEl);
+            if (appContentWrap.querySelector(".load-more")) {
+                appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
+            } else {
+                appContentWrap.appendChild(listEl);
+                appContentWrap.appendChild(button)
+            }
             
         })
 

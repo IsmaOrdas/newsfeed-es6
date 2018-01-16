@@ -23,9 +23,11 @@ export function createEl(tagName) {
 }
 
 export function clearMainView() {
+    console.log("clear")
     document.querySelector(".app-content").innerHTML = "";
 }
 
+export const header = createEl("header");
 export const list = createEl("ul");
 export const article = createEl("article");
 export const div = createEl("div");
