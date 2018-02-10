@@ -7,9 +7,7 @@ export const commentsPage = () => {
 export const commentElement = (data) => {
     return div(
         {"class": "c-comment"},
-        `<div class="prueba">
-            <div class="autor-time"><span class="author">${data.user}</span><span class="time">${data.time_ago}</span></div>
-            <div>${data.content}</div>
-        </div>`
+        `<div class="c-comment__info"><span class="c-comment__author">${data.user}</span><span class="c-comment__time">${data.time_ago}</span></div>
+        <div class="c-comment__content">${data.content}</div>`
     );
 }

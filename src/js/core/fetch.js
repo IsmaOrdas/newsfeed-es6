@@ -32,11 +32,10 @@ export const getData = (url, clearView = false) => {
         response.json()
         .then((data) => {
 
-            console.log(data);
             let appContentWrap = document.querySelector(".app-content");
 
-            let button = dom.createEl("button")({"class": "load-more"});
-            button.textContent = "Load more";
+            let loadMoreBtn = dom.createEl("button")({"class": "load-more"});
+            loadMoreBtn.textContent = "Load more";
 
             clearView && dom.clearMainView();
 
@@ -48,7 +47,7 @@ export const getData = (url, clearView = false) => {
                 appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
             } else {
                 appContentWrap.appendChild(listEl);
-                appContentWrap.appendChild(button)
+                appContentWrap.appendChild(loadMoreBtn)
             }
             
         })
@@ -77,16 +76,16 @@ export const getComments = (url) => {
         .then((data) => {
            
             dom.clearMainView();
-            let wrap = commentsPage();
-            wrap.appendChild(articleElement(data));
-            // document.querySelector(".app-content").appendChild(articleElement(data));
-
+            
+            let commentsPageEl = commentsPage();
+            
             data.comments.map((el) => {
                 listComments.appendChild(commentElement(el));
             });
-            wrap.appendChild(listComments);
 
-            document.querySelector(".app-content").appendChild(wrap);
+            dom.appendChildren(commentsPageEl, [articleElement(data), listComments]);
+
+            document.querySelector(".app-content").appendChild(commentsPageEl);
 
         })
 

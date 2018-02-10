@@ -73,11 +73,18 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.appendChildren = appendChildren;
 exports.createEl = createEl;
 exports.clearMainView = clearMainView;
 function setAttrs(attrs, el) {
     Object.keys(attrs).forEach(function (key) {
         return el.setAttribute(key, attrs[key]);
+    });
+}
+
+function appendChildren(parent, children) {
+    children.forEach(function (el) {
+        parent.appendChild(el);
     });
 }
 
@@ -319,11 +326,10 @@ var getData = exports.getData = function getData(url) {
 
         response.json().then(function (data) {
 
-            console.log(data);
             var appContentWrap = document.querySelector(".app-content");
 
-            var button = dom.createEl("button")({ "class": "load-more" });
-            button.textContent = "Load more";
+            var loadMoreBtn = dom.createEl("button")({ "class": "load-more" });
+            loadMoreBtn.textContent = "Load more";
 
             clearView && dom.clearMainView();
 
@@ -335,7 +341,7 @@ var getData = exports.getData = function getData(url) {
                 appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
             } else {
                 appContentWrap.appendChild(listEl);
-                appContentWrap.appendChild(button);
+                appContentWrap.appendChild(loadMoreBtn);
             }
         });
     }).catch(function (err) {
@@ -357,16 +363,16 @@ var getComments = exports.getComments = function getComments(url) {
         response.json().then(function (data) {
 
             dom.clearMainView();
-            var wrap = (0, _comment.commentsPage)();
-            wrap.appendChild((0, _article.articleElement)(data));
-            // document.querySelector(".app-content").appendChild(articleElement(data));
+
+            var commentsPageEl = (0, _comment.commentsPage)();
 
             data.comments.map(function (el) {
                 listComments.appendChild((0, _comment.commentElement)(el));
             });
-            wrap.appendChild(listComments);
 
-            document.querySelector(".app-content").appendChild(wrap);
+            dom.appendChildren(commentsPageEl, [(0, _article.articleElement)(data), listComments]);
+
+            document.querySelector(".app-content").appendChild(commentsPageEl);
         });
     }).catch(function (err) {
         console.log("error", err);
@@ -412,7 +418,7 @@ var commentsPage = exports.commentsPage = function commentsPage() {
 };
 
 var commentElement = exports.commentElement = function commentElement(data) {
-    return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"prueba\">\n            <div class=\"autor-time\"><span class=\"author\">" + data.user + "</span><span class=\"time\">" + data.time_ago + "</span></div>\n            <div>" + data.content + "</div>\n        </div>");
+    return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"c-comment__info\"><span class=\"c-comment__author\">" + data.user + "</span><span class=\"c-comment__time\">" + data.time_ago + "</span></div>\n        <div class=\"c-comment__content\">" + data.content + "</div>");
 };
 
 /***/ }),

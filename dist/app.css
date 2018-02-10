@@ -50,10 +50,10 @@ a {
 .c-comment {
   border-bottom: 1px solid;
   margin-bottom: 20px; }
-  .c-comment .autor-time {
+  .c-comment .c-comment__info {
     color: #777777;
     font-size: 13px; }
-  .c-comment .author {
+  .c-comment .c-comment__author {
     padding-right: 5px; }
 
 .load-more {

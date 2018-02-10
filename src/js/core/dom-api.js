@@ -2,6 +2,12 @@ function setAttrs(attrs, el) {
     Object.keys(attrs).forEach((key) => el.setAttribute(key, attrs[key]));
 }
 
+export function appendChildren(parent, children) {
+    children.forEach((el) => {
+        parent.appendChild(el);
+    });
+}
+
 export function createEl(tagName) {
     
     return (attrs, template) => {
