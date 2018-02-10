@@ -101,7 +101,6 @@ function createEl(tagName) {
 }
 
 function clearMainView() {
-    console.log("clear");
     document.querySelector(".app-content").innerHTML = "";
 }
 
@@ -182,17 +181,12 @@ var App = exports.App = function () {
     _createClass(App, [{
         key: "init",
         value: function init() {
-            var head = new _header.Header();
-            this.app.appendChild(head.createHeader());
 
-            this.app.insertBefore(head.createHeader(), this.app.querySelector(".app-content"));
+            this.app.insertBefore((0, _header.createHeader)(), this.app.querySelector(".app-content"));
 
             this._getData(1, false);
 
-            // this.app.classList.add("visible")
-
             // this._initNav();
-            // this._getData(1, true);
 
             this.events();
         }
@@ -237,7 +231,6 @@ var App = exports.App = function () {
             var url = window.location.pathname;
 
             if (url === "/") {
-                console.log("si");
                 this._getData(1);
             } else if (url.includes("item")) {
                 var position = url.substr(url.lastIndexOf("/") + 1);
@@ -263,36 +256,17 @@ document.addEventListener("DOMContentLoaded", function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Header = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+exports.createHeader = createHeader;
 
 var _domApi = __webpack_require__(0);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function createHeader() {
+    return (0, _domApi.header)({ "class": "app-header" }, headerTemplate());
+}
 
-var Header = exports.Header = function () {
-    function Header() {
-        _classCallCheck(this, Header);
-
-        console.log("header");
-    }
-
-    _createClass(Header, [{
-        key: "createHeader",
-        value: function createHeader() {
-            var headerEl = (0, _domApi.header)({ "class": "app-header" }, this.getHeaderTemplate());
-            return headerEl;
-        }
-    }, {
-        key: "getHeaderTemplate",
-        value: function getHeaderTemplate() {
-            return "<nav id=\"main-nav\" class=\"main-nav\">\n            <h1>HN</h1>\n            <div class=\"wrap-nav-links\">\n                <ul >\n                    <li><a class=\"nav-link\" href=\"#new\">new</a></li>\n                    <li><a class=\"nav-link\" href=\"#top\">top</a></li>\n                    <li><a class=\"nav-link\" href=\"#best\">best</a></li>\n                </ul>\n            </div>\n        </nav>";
-        }
-    }]);
-
-    return Header;
-}();
+var headerTemplate = function headerTemplate() {
+    return "<nav id=\"main-nav\" class=\"main-nav\">\n                <h1>HN</h1>\n                <div class=\"wrap-nav-links\">\n                    <ul >\n                        <li><a class=\"nav-link\" href=\"#new\">new</a></li>\n                        <li><a class=\"nav-link\" href=\"#top\">top</a></li>\n                        <li><a class=\"nav-link\" href=\"#best\">best</a></li>\n                    </ul>\n                </div>\n            </nav>";
+};
 
 /***/ }),
 /* 5 */
@@ -310,9 +284,13 @@ var _urls = __webpack_require__(1);
 
 var _domApi = __webpack_require__(0);
 
+var dom = _interopRequireWildcard(_domApi);
+
 var _article = __webpack_require__(6);
 
 var _comment = __webpack_require__(7);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var createRequest = exports.createRequest = function createRequest(url) {
 
@@ -329,7 +307,7 @@ var createRequest = exports.createRequest = function createRequest(url) {
 var getData = exports.getData = function getData(url) {
     var clearView = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-    var listEl = (0, _domApi.div)({ "class": "c-list" });
+    var listEl = dom.div({ "class": "c-list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -344,13 +322,13 @@ var getData = exports.getData = function getData(url) {
             console.log(data);
             var appContentWrap = document.querySelector(".app-content");
 
-            var button = (0, _domApi.createEl)("button")({ "class": "load-more" });
+            var button = dom.createEl("button")({ "class": "load-more" });
             button.textContent = "Load more";
 
-            clearView && (0, _domApi.clearMainView)();
+            clearView && dom.clearMainView();
 
-            data.map(function (id) {
-                listEl.appendChild((0, _article.articleElement)(id));
+            data.map(function (obj) {
+                listEl.appendChild((0, _article.articleElement)(obj));
             });
 
             if (appContentWrap.querySelector(".load-more")) {
@@ -366,7 +344,7 @@ var getData = exports.getData = function getData(url) {
 };
 
 var getComments = exports.getComments = function getComments(url) {
-    var listComments = (0, _domApi.list)({ "class": "c-list" });
+    var listComments = dom.list({ "class": "c-list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -378,7 +356,7 @@ var getComments = exports.getComments = function getComments(url) {
 
         response.json().then(function (data) {
 
-            (0, _domApi.clearMainView)();
+            dom.clearMainView();
             var wrap = (0, _comment.commentsPage)();
             wrap.appendChild((0, _article.articleElement)(data));
             // document.querySelector(".app-content").appendChild(articleElement(data));

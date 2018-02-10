@@ -45,8 +45,7 @@ a {
 
 .app-content {
   background: #E1E2E1;
-  grid-column: 1 / 2;
-  padding: 20px; }
+  grid-column: 1 / 2; }
 
 .c-comment {
   border-bottom: 1px solid;
@@ -56,6 +55,16 @@ a {
     font-size: 13px; }
   .c-comment .author {
     padding-right: 5px; }
+
+.load-more {
+  background: #607d8b;
+  border: 0;
+  cursor: pointer;
+  height: 40px;
+  width: 100%; }
+
+.comments-page .c-list__story {
+  padding: 20px 20px 0 20px; }
 
 .main-nav {
   align-items: baseline;
@@ -79,7 +88,10 @@ a {
 
 .c-list {
   display: flex;
-  flex-direction: column; }
+  flex-direction: column;
+  padding: 20px 20px 0 20px; }
+  .c-list:nth-child(n+2) {
+    padding: 0 20px; }
 
 .c-list__story {
   display: flex;

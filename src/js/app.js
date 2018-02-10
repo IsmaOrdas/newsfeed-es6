@@ -1,4 +1,4 @@
-import { Header } from "./components/header";
+import { createHeader } from "./components/header";
 import { getComments, getData } from "./core/fetch";
 import { urls } from "./core/urls";
 import { createEl } from "./core/dom-api";
@@ -12,19 +12,15 @@ export class App {
     }
 
     init() {
-        let head = new Header();
-        this.app.appendChild(head.createHeader());
 
-        this.app.insertBefore(head.createHeader(), this.app.querySelector(".app-content"));
+        this.app.insertBefore(createHeader(), this.app.querySelector(".app-content"));
         
         this._getData(1, false);
         
-        // this.app.classList.add("visible")
-        
         // this._initNav();
-        // this._getData(1, true);
             
         this.events();
+
     }
 
     _initNav() {
@@ -65,7 +61,6 @@ export class App {
         let url = window.location.pathname;
 
         if (url === "/") {
-            console.log("si");
             this._getData(1);
         } else if (url.includes("item")) {
             let position = url.substr(url.lastIndexOf("/") + 1);
@@ -74,9 +69,6 @@ export class App {
     }
 
 }
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
 

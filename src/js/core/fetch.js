@@ -1,5 +1,5 @@
 import { urls } from "./urls.js";
-import { list, clearMainView, div, boton, createEl } from "./dom-api.js";
+import * as dom  from "./dom-api.js";
 import { articleElement } from "../components/article";
 import { commentElement, commentsPage } from "../components/comment";
 
@@ -18,7 +18,7 @@ export const createRequest = (url) => {
 }
 
 export const getData = (url, clearView = false) => {
-    let listEl = div({"class": "c-list"});
+    let listEl = dom.div({"class": "c-list"});
     let request = createRequest(url);
     
     fetch(request)
@@ -35,13 +35,13 @@ export const getData = (url, clearView = false) => {
             console.log(data);
             let appContentWrap = document.querySelector(".app-content");
 
-            let button = createEl("button")({"class": "load-more"});
+            let button = dom.createEl("button")({"class": "load-more"});
             button.textContent = "Load more";
 
-            clearView && clearMainView();
+            clearView && dom.clearMainView();
 
-            data.map(id => {
-                listEl.appendChild(articleElement(id));
+            data.map(obj => {
+                listEl.appendChild(articleElement(obj));
             });
 
             if (appContentWrap.querySelector(".load-more")) {
@@ -62,7 +62,7 @@ export const getData = (url, clearView = false) => {
 
 
 export const getComments = (url) => {
-    let listComments = list({ "class": "c-list" });
+    let listComments = dom.list({ "class": "c-list" });
     let request = createRequest(url);
 
     fetch(request)
@@ -76,7 +76,7 @@ export const getComments = (url) => {
         response.json()
         .then((data) => {
            
-            clearMainView();
+            dom.clearMainView();
             let wrap = commentsPage();
             wrap.appendChild(articleElement(data));
             // document.querySelector(".app-content").appendChild(articleElement(data));

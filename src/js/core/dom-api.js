@@ -23,7 +23,6 @@ export function createEl(tagName) {
 }
 
 export function clearMainView() {
-    console.log("clear")
     document.querySelector(".app-content").innerHTML = "";
 }
 
