@@ -1,8 +1,7 @@
 import { urls } from "./urls.js";
 import * as dom  from "./dom-api.js";
 import { articleElement } from "../components/article";
-import { commentElement, commentsPage } from "../components/comment";
-
+import * as comments from "../components/comment";
 
 export const createRequest = (url) => {
     
@@ -34,7 +33,7 @@ export const getData = (url, clearView = false) => {
 
             let appContentWrap = document.querySelector(".app-content");
 
-            let loadMoreBtn = dom.createEl("button")({"class": "load-more"});
+            let loadMoreBtn = dom.button({"class": "load-more"});
             loadMoreBtn.textContent = "Load more";
 
             clearView && dom.clearMainView();
@@ -46,8 +45,7 @@ export const getData = (url, clearView = false) => {
             if (appContentWrap.querySelector(".load-more")) {
                 appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
             } else {
-                appContentWrap.appendChild(listEl);
-                appContentWrap.appendChild(loadMoreBtn)
+                dom.appendChildren(appContentWrap, [listEl, loadMoreBtn]);
             }
             
         })
@@ -60,8 +58,9 @@ export const getData = (url, clearView = false) => {
 }
 
 
+
 export const getComments = (url) => {
-    let listComments = dom.list({ "class": "c-list" });
+    let listComments = dom.list({ "class": "c-list c-comments__list" });
     let request = createRequest(url);
 
     fetch(request)
@@ -77,10 +76,10 @@ export const getComments = (url) => {
            
             dom.clearMainView();
             
-            let commentsPageEl = commentsPage();
+            let commentsPageEl = comments.commentsPage();
             
             data.comments.map((el) => {
-                listComments.appendChild(commentElement(el));
+                listComments.appendChild(comments.commentElement(el));
             });
 
             dom.appendChildren(commentsPageEl, [articleElement(data), listComments]);

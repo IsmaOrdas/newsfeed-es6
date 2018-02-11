@@ -1,6 +1,6 @@
 import { createHeader } from "./components/header";
 import { getComments, getData } from "./core/fetch";
-import { urls } from "./core/urls";
+import { urls, getParamFromUrl } from "./core/urls";
 import { createEl } from "./core/dom-api";
 
 export class App {
@@ -8,24 +8,16 @@ export class App {
     constructor(container) {
         this.app = container;
         this.contentArea = this.app.querySelector(".app-content");
+        this.pageNum = 1;
         this.init();
     }
 
     init() {
-
         this.app.insertBefore(createHeader(), this.app.querySelector(".app-content"));
         
-        this._getData(1, false);
-        
-        // this._initNav();
-            
-        this.events();
-
-    }
-
-    _initNav() {
-        let navEl = this.app.querySelector("#main-nav");
-        let nav = new Nav(navEl);
+        this.router();
+           
+        this.events();  
     }
 
     events() {
@@ -35,35 +27,28 @@ export class App {
 
             if (element.classList.contains("comments-link")) {
                 ev.preventDefault();
-                history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
+                history.pushState({}, "prueba", "?id=" + element.getAttribute("data-item"));
                 getComments(urls.item(element.getAttribute("data-item")))
-            }
-
-            if (element.classList.contains("load-more")) {
-                this._getData(2, false)
+            
+            } else if (element.classList.contains("load-more")) {
+                this.pageNum += 1;
+                getData(urls.topStories(this.pageNum), false);
             }
 
         });
-
-        // window.addEventListener('load', this.router);
-
-        
-
+       
         window.addEventListener("popstate", this.router, false);
 
     }
 
-    _getData (page, clearView) {
-        getData(urls.topStories(page), clearView);
-    }
-
     router () {
-        let url = window.location.pathname;
+        let searchUrl = window.location.search;
 
-        if (url === "/") {
-            this._getData(1);
-        } else if (url.includes("item")) {
-            let position = url.substr(url.lastIndexOf("/") + 1);
+        if (!searchUrl) {    
+            getData(urls.topStories(1), true);
+        } else if (searchUrl.includes("id")) {
+            let id = getParamFromUrl(window.location.search, "id");
+            getComments(urls.item(id));
         }
 
     }

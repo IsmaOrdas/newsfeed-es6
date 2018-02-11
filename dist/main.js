@@ -115,7 +115,7 @@ var header = exports.header = createEl("header");
 var list = exports.list = createEl("ul");
 var article = exports.article = createEl("article");
 var div = exports.div = createEl("div");
-var boton = exports.boton = createEl("button");
+var button = exports.button = createEl("button");
 
 /***/ }),
 /* 1 */
@@ -141,6 +141,27 @@ var urls = exports.urls = {
     },
     "item": function item(id) {
         return apiHost + "/item/" + id;
+    }
+};
+
+var getParamFromUrl = exports.getParamFromUrl = function getParamFromUrl(url, param) {
+    url = url.replace(/%5B%5D/g, "");
+    url = url.replace(/[\[\]']+/g, "");
+    var request = {};
+    var pairs = url.substring(url.indexOf('?') + 1).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+        if (!pairs[i]) continue;
+        var pair = pairs[i].split('=');
+        if (request[decodeURIComponent(pair[0])] === undefined) {
+            request[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+        } else {
+            request[decodeURIComponent(pair[0])] += "," + decodeURIComponent(pair[1]);
+        }
+    }
+    if (param) {
+        return request[param];
+    } else {
+        return request;
     }
 };
 
@@ -182,26 +203,18 @@ var App = exports.App = function () {
 
         this.app = container;
         this.contentArea = this.app.querySelector(".app-content");
+        this.pageNum = 1;
         this.init();
     }
 
     _createClass(App, [{
         key: "init",
         value: function init() {
-
             this.app.insertBefore((0, _header.createHeader)(), this.app.querySelector(".app-content"));
 
-            this._getData(1, false);
-
-            // this._initNav();
+            this.router();
 
             this.events();
-        }
-    }, {
-        key: "_initNav",
-        value: function _initNav() {
-            var navEl = this.app.querySelector("#main-nav");
-            var nav = new Nav(navEl);
         }
     }, {
         key: "events",
@@ -213,34 +226,26 @@ var App = exports.App = function () {
 
                 if (element.classList.contains("comments-link")) {
                     ev.preventDefault();
-                    history.pushState({}, "prueba", "/item/" + element.getAttribute("data-item"));
+                    history.pushState({}, "prueba", "?id=" + element.getAttribute("data-item"));
                     (0, _fetch.getComments)(_urls.urls.item(element.getAttribute("data-item")));
-                }
-
-                if (element.classList.contains("load-more")) {
-                    _this._getData(2, false);
+                } else if (element.classList.contains("load-more")) {
+                    _this.pageNum += 1;
+                    (0, _fetch.getData)(_urls.urls.topStories(_this.pageNum), false);
                 }
             });
-
-            // window.addEventListener('load', this.router);
-
 
             window.addEventListener("popstate", this.router, false);
         }
     }, {
-        key: "_getData",
-        value: function _getData(page, clearView) {
-            (0, _fetch.getData)(_urls.urls.topStories(page), clearView);
-        }
-    }, {
         key: "router",
         value: function router() {
-            var url = window.location.pathname;
+            var searchUrl = window.location.search;
 
-            if (url === "/") {
-                this._getData(1);
-            } else if (url.includes("item")) {
-                var position = url.substr(url.lastIndexOf("/") + 1);
+            if (!searchUrl) {
+                (0, _fetch.getData)(_urls.urls.topStories(1), true);
+            } else if (searchUrl.includes("id")) {
+                var id = (0, _urls.getParamFromUrl)(window.location.search, "id");
+                (0, _fetch.getComments)(_urls.urls.item(id));
             }
         }
     }]);
@@ -297,6 +302,8 @@ var _article = __webpack_require__(6);
 
 var _comment = __webpack_require__(7);
 
+var comments = _interopRequireWildcard(_comment);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 var createRequest = exports.createRequest = function createRequest(url) {
@@ -328,7 +335,7 @@ var getData = exports.getData = function getData(url) {
 
             var appContentWrap = document.querySelector(".app-content");
 
-            var loadMoreBtn = dom.createEl("button")({ "class": "load-more" });
+            var loadMoreBtn = dom.button({ "class": "load-more" });
             loadMoreBtn.textContent = "Load more";
 
             clearView && dom.clearMainView();
@@ -340,8 +347,7 @@ var getData = exports.getData = function getData(url) {
             if (appContentWrap.querySelector(".load-more")) {
                 appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
             } else {
-                appContentWrap.appendChild(listEl);
-                appContentWrap.appendChild(loadMoreBtn);
+                dom.appendChildren(appContentWrap, [listEl, loadMoreBtn]);
             }
         });
     }).catch(function (err) {
@@ -350,7 +356,7 @@ var getData = exports.getData = function getData(url) {
 };
 
 var getComments = exports.getComments = function getComments(url) {
-    var listComments = dom.list({ "class": "c-list" });
+    var listComments = dom.list({ "class": "c-list c-comments__list" });
     var request = createRequest(url);
 
     fetch(request).then(function (response) {
@@ -364,10 +370,10 @@ var getComments = exports.getComments = function getComments(url) {
 
             dom.clearMainView();
 
-            var commentsPageEl = (0, _comment.commentsPage)();
+            var commentsPageEl = comments.commentsPage();
 
             data.comments.map(function (el) {
-                listComments.appendChild((0, _comment.commentElement)(el));
+                listComments.appendChild(comments.commentElement(el));
             });
 
             dom.appendChildren(commentsPageEl, [(0, _article.articleElement)(data), listComments]);
@@ -418,7 +424,7 @@ var commentsPage = exports.commentsPage = function commentsPage() {
 };
 
 var commentElement = exports.commentElement = function commentElement(data) {
-    return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"c-comment__info\"><span class=\"c-comment__author\">" + data.user + "</span><span class=\"c-comment__time\">" + data.time_ago + "</span></div>\n        <div class=\"c-comment__content\">" + data.content + "</div>");
+    return (0, _domApi.div)({ "class": "c-comment" }, "<div class=\"c-comment__info\">\n            <span class=\"c-comment__author\">" + data.user + "</span>\n            <span class=\"c-comment__time\">" + data.time_ago + "</span>\n        </div>\n        <div class=\"c-comment__content\">" + data.content + "</div>");
 };
 
 /***/ }),
