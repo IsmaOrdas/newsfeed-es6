@@ -402,7 +402,7 @@ var _domApi = __webpack_require__(0);
 var _urls = __webpack_require__(1);
 
 var articleElement = exports.articleElement = function articleElement(data) {
-    return (0, _domApi.article)({ "class": "c-list__story", "data-item": data.id }, "<div class=\"domain-info\">\n            <a class=\"title-link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"domain\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-item-info\">\n            <span>" + data.points + " points</span>\n            <span>by " + data.user + "</span><span>" + data.time_ago + "</span>\n            <span>| <a class=\"comments-link\" data-item=\"" + data.id + "\" href=\"/item/" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
+    return (0, _domApi.article)({ "class": "c-story", "data-item": data.id }, "<div class=\"c-story__title\">\n            <a class=\"c-story__link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"c-story__source\" target=\"_blank\" rel=\"noopener\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-story__meta\">\n            <span class=\"c-story__points\">" + data.points + " points</span>\n            <span class=\"c-story__user\">by " + data.user + "</span><span class=\"c-story__time\">" + data.time_ago + "</span>\n            <span>| <a class=\"c-story__comments-link\" data-item=\"" + data.id + "\" href=\"/item/" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
 };
 
 /***/ }),

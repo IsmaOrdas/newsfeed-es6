@@ -10,29 +10,31 @@
     &:nth-child(n+2)
         padding: 0 20px
 
-.c-list__story
+.c-story
     display: flex 
     flex-direction: column
     margin-bottom: 20px
 
-    .title-link   
-        display: inline-block
-        margin-bottom: 5px
+.c-story__link   
+    display: inline-block
+    margin-bottom: 5px
 
-    .domain
-        color: #777777
+.c-story__source
+    color: #777777
+    font-size: 14px
+    
+.c-story__meta
+    color: #777777
+    font-size: 12px
+
+    @media (min-width: 1024px)
         font-size: 14px
-        
-    .c-item-info
-        color: #777777
-        font-size: 12px
-
-        @media (min-width: 1024px)
-            font-size: 14px
-
-    .comments-link  
-        color: inherit
-        display: inline-block
 
     span   
         margin-right: 10px
+
+.c-story__comments-link
+    color: inherit
+    display: inline-block
+
+    
