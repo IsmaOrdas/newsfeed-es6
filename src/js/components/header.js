@@ -6,7 +6,7 @@ export function createHeader() {
 
 const headerTemplate = () => {
     return `<nav id="main-nav" class="main-nav">
-                <h1>HN</h1>
+                <h1><a href="/">HN</a></h1>
                 <div class="wrap-nav-links">
                     <ul >
                         <li><a class="nav-link" href="#new">new</a></li>

@@ -32,6 +32,10 @@ export function clearMainView() {
     document.querySelector(".app-content").innerHTML = "";
 }
 
+export function classContains(node, className) {
+    return node.classList.contains(className);
+}
+
 export const header = createEl("header");
 export const list = createEl("ul");
 export const article = createEl("article");

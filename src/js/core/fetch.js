@@ -30,7 +30,7 @@ export const getData = (url, clearView = false) => {
 
         response.json()
         .then((data) => {
-
+            console.log(data)
             let appContentWrap = document.querySelector(".app-content");
 
             let loadMoreBtn = dom.button({"class": "load-more"});

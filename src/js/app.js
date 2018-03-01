@@ -1,7 +1,8 @@
 import { createHeader } from "./components/header";
 import { getComments, getData } from "./core/fetch";
-import { urls, getParamFromUrl } from "./core/urls";
+import { urls, getParamFromUrl, } from "./core/urls";
 import { createEl } from "./core/dom-api";
+import { router } from "./core/router";
 
 export class App {
 
@@ -13,9 +14,9 @@ export class App {
     }
 
     init() {
-        this.app.insertBefore(createHeader(), this.app.querySelector(".app-content"));
+        this.app.insertBefore(createHeader(), this.contentArea);
         
-        this.router();
+        router();
            
         this.events();  
     }
@@ -25,10 +26,10 @@ export class App {
         this.contentArea.addEventListener("click", (ev) => {
             let element = ev.target;
 
-            if (element.classList.contains("comments-link")) {
-                ev.preventDefault();
-                history.pushState({}, "prueba", "?id=" + element.getAttribute("data-item"));
-                getComments(urls.item(element.getAttribute("data-item")))
+            if (element.classList.contains("c-story__comments-link")) {
+                let itemId = element.dataset.item;
+                history.pushState({}, "storyId", "?id=" + itemId);
+                getComments(urls.item(itemId))
             
             } else if (element.classList.contains("load-more")) {
                 this.pageNum += 1;
@@ -37,19 +38,7 @@ export class App {
 
         });
        
-        window.addEventListener("popstate", this.router, false);
-
-    }
-
-    router () {
-        let searchUrl = window.location.search;
-
-        if (!searchUrl) {    
-            getData(urls.topStories(1), true);
-        } else if (searchUrl.includes("id")) {
-            let id = getParamFromUrl(window.location.search, "id");
-            getComments(urls.item(id));
-        }
+        window.addEventListener("popstate", router, false);
 
     }
 

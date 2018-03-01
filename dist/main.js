@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -76,6 +76,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.appendChildren = appendChildren;
 exports.createEl = createEl;
 exports.clearMainView = clearMainView;
+exports.classContains = classContains;
 function setAttrs(attrs, el) {
     Object.keys(attrs).forEach(function (key) {
         return el.setAttribute(key, attrs[key]);
@@ -109,6 +110,10 @@ function createEl(tagName) {
 
 function clearMainView() {
     document.querySelector(".app-content").innerHTML = "";
+}
+
+function classContains(node, className) {
+    return node.classList.contains(className);
 }
 
 var header = exports.header = createEl("header");
@@ -169,121 +174,6 @@ var getParamFromUrl = exports.getParamFromUrl = function getParamFromUrl(url, pa
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(3);
-module.exports = __webpack_require__(8);
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.App = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _header = __webpack_require__(4);
-
-var _fetch = __webpack_require__(5);
-
-var _urls = __webpack_require__(1);
-
-var _domApi = __webpack_require__(0);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var App = exports.App = function () {
-    function App(container) {
-        _classCallCheck(this, App);
-
-        this.app = container;
-        this.contentArea = this.app.querySelector(".app-content");
-        this.pageNum = 1;
-        this.init();
-    }
-
-    _createClass(App, [{
-        key: "init",
-        value: function init() {
-            this.app.insertBefore((0, _header.createHeader)(), this.app.querySelector(".app-content"));
-
-            this.router();
-
-            this.events();
-        }
-    }, {
-        key: "events",
-        value: function events() {
-            var _this = this;
-
-            this.contentArea.addEventListener("click", function (ev) {
-                var element = ev.target;
-
-                if (element.classList.contains("comments-link")) {
-                    ev.preventDefault();
-                    history.pushState({}, "prueba", "?id=" + element.getAttribute("data-item"));
-                    (0, _fetch.getComments)(_urls.urls.item(element.getAttribute("data-item")));
-                } else if (element.classList.contains("load-more")) {
-                    _this.pageNum += 1;
-                    (0, _fetch.getData)(_urls.urls.topStories(_this.pageNum), false);
-                }
-            });
-
-            window.addEventListener("popstate", this.router, false);
-        }
-    }, {
-        key: "router",
-        value: function router() {
-            var searchUrl = window.location.search;
-
-            if (!searchUrl) {
-                (0, _fetch.getData)(_urls.urls.topStories(1), true);
-            } else if (searchUrl.includes("id")) {
-                var id = (0, _urls.getParamFromUrl)(window.location.search, "id");
-                (0, _fetch.getComments)(_urls.urls.item(id));
-            }
-        }
-    }]);
-
-    return App;
-}();
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    new App(document.getElementById("app"));
-});
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.createHeader = createHeader;
-
-var _domApi = __webpack_require__(0);
-
-function createHeader() {
-    return (0, _domApi.header)({ "class": "app-header" }, headerTemplate());
-}
-
-var headerTemplate = function headerTemplate() {
-    return "<nav id=\"main-nav\" class=\"main-nav\">\n                <h1>HN</h1>\n                <div class=\"wrap-nav-links\">\n                    <ul >\n                        <li><a class=\"nav-link\" href=\"#new\">new</a></li>\n                        <li><a class=\"nav-link\" href=\"#top\">top</a></li>\n                        <li><a class=\"nav-link\" href=\"#best\">best</a></li>\n                    </ul>\n                </div>\n            </nav>";
-};
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
@@ -332,7 +222,7 @@ var getData = exports.getData = function getData(url) {
         }
 
         response.json().then(function (data) {
-
+            console.log(data);
             var appContentWrap = document.querySelector(".app-content");
 
             var loadMoreBtn = dom.button({ "class": "load-more" });
@@ -386,6 +276,111 @@ var getComments = exports.getComments = function getComments(url) {
 };
 
 /***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(4);
+module.exports = __webpack_require__(9);
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.App = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _header = __webpack_require__(5);
+
+var _fetch = __webpack_require__(2);
+
+var _urls = __webpack_require__(1);
+
+var _domApi = __webpack_require__(0);
+
+var _router = __webpack_require__(8);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var App = exports.App = function () {
+    function App(container) {
+        _classCallCheck(this, App);
+
+        this.app = container;
+        this.contentArea = this.app.querySelector(".app-content");
+        this.pageNum = 1;
+        this.init();
+    }
+
+    _createClass(App, [{
+        key: "init",
+        value: function init() {
+            this.app.insertBefore((0, _header.createHeader)(), this.contentArea);
+
+            (0, _router.router)();
+
+            this.events();
+        }
+    }, {
+        key: "events",
+        value: function events() {
+            var _this = this;
+
+            this.contentArea.addEventListener("click", function (ev) {
+                var element = ev.target;
+
+                if (element.classList.contains("c-story__comments-link")) {
+                    var itemId = element.dataset.item;
+                    history.pushState({}, "storyId", "?id=" + itemId);
+                    (0, _fetch.getComments)(_urls.urls.item(itemId));
+                } else if (element.classList.contains("load-more")) {
+                    _this.pageNum += 1;
+                    (0, _fetch.getData)(_urls.urls.topStories(_this.pageNum), false);
+                }
+            });
+
+            window.addEventListener("popstate", _router.router, false);
+        }
+    }]);
+
+    return App;
+}();
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    new App(document.getElementById("app"));
+});
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.createHeader = createHeader;
+
+var _domApi = __webpack_require__(0);
+
+function createHeader() {
+    return (0, _domApi.header)({ "class": "app-header" }, headerTemplate());
+}
+
+var headerTemplate = function headerTemplate() {
+    return "<nav id=\"main-nav\" class=\"main-nav\">\n                <h1><a href=\"/\">HN</a></h1>\n                <div class=\"wrap-nav-links\">\n                    <ul >\n                        <li><a class=\"nav-link\" href=\"#new\">new</a></li>\n                        <li><a class=\"nav-link\" href=\"#top\">top</a></li>\n                        <li><a class=\"nav-link\" href=\"#best\">best</a></li>\n                    </ul>\n                </div>\n            </nav>";
+};
+
+/***/ }),
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -402,7 +397,7 @@ var _domApi = __webpack_require__(0);
 var _urls = __webpack_require__(1);
 
 var articleElement = exports.articleElement = function articleElement(data) {
-    return (0, _domApi.article)({ "class": "c-story", "data-item": data.id }, "<div class=\"c-story__title\">\n            <a class=\"c-story__link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"www." + data.domain + "\" class=\"c-story__source\" target=\"_blank\" rel=\"noopener\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-story__meta\">\n            <span class=\"c-story__points\">" + data.points + " points</span>\n            <span class=\"c-story__user\">by " + data.user + "</span><span class=\"c-story__time\">" + data.time_ago + "</span>\n            <span>| <a class=\"c-story__comments-link\" data-item=\"" + data.id + "\" href=\"/item/" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
+    return (0, _domApi.article)({ "class": "c-story", "data-item": data.id }, "<div class=\"c-story__title\">\n            <a class=\"c-story__link\" href=\"" + data.url + "\" target=\"_blank\" rel=\"noopener\">" + data.title + "</a>\n            <a href=\"https://www." + data.domain + "\" class=\"c-story__source\" target=\"_blank\" rel=\"noopener\"> (" + data.domain + ")</a>\n        </div>\n        <div class=\"c-story__meta\">\n            <span class=\"c-story__points\">" + data.points + " points</span>\n            <span class=\"c-story__user\">by " + data.user + "</span><span class=\"c-story__time\">" + data.time_ago + "</span>\n            <span>| <a class=\"c-story__comments-link\" data-item=\"" + data.id + "\" href=\"?id=" + data.id + "\">" + data.comments_count + " comments</a></span>\n        </div>");
 };
 
 /***/ }),
@@ -429,6 +424,33 @@ var commentElement = exports.commentElement = function commentElement(data) {
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.router = undefined;
+
+var _fetch = __webpack_require__(2);
+
+var _urls = __webpack_require__(1);
+
+var router = exports.router = function router() {
+    var searchUrl = window.location.search;
+
+    if (!searchUrl) {
+        (0, _fetch.getData)(_urls.urls.topStories(1), true);
+    } else if (searchUrl.includes("id")) {
+        var id = (0, _urls.getParamFromUrl)(window.location.search, "id");
+        (0, _fetch.getComments)(_urls.urls.item(id));
+    }
+};
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
