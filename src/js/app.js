@@ -2,7 +2,7 @@ import { createHeader } from "./components/header";
 import { getComments, getData } from "./core/fetch";
 import { urls, getParamFromUrl, } from "./core/urls";
 import { createEl } from "./core/dom-api";
-import { router } from "./core/router";
+import { Router } from "./core/router";
 
 export class App {
 
@@ -10,19 +10,20 @@ export class App {
         this.app = container;
         this.contentArea = this.app.querySelector(".app-content");
         this.pageNum = 1;
+        this.router = new Router();
         this.init();
     }
 
     init() {
         this.app.insertBefore(createHeader(), this.contentArea);
         
-        router();
-           
         this.events();  
     }
 
     events() {
 
+        window.addEventListener("popstate", this.router.update, false);
+        
         this.contentArea.addEventListener("click", (ev) => {
             let element = ev.target;
 
@@ -33,12 +34,11 @@ export class App {
             
             } else if (element.classList.contains("load-more")) {
                 this.pageNum += 1;
+                history.pushState({}, "page", "?page=" + this.pageNum);
                 getData(urls.topStories(this.pageNum), false);
             }
 
         });
-       
-        window.addEventListener("popstate", router, false);
 
     }
 
