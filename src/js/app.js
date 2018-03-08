@@ -26,13 +26,13 @@ export class App {
         
         this.contentArea.addEventListener("click", (ev) => {
             let element = ev.target;
-
-            if (element.classList.contains("c-story__comments-link")) {
+            
+            if (element.matches(".c-story__comments-link")) {
                 let itemId = element.dataset.item;
                 history.pushState({}, "storyId", "?id=" + itemId);
                 getComments(urls.item(itemId))
             
-            } else if (element.classList.contains("load-more")) {
+            } else if (element.matches(".load-more")) {
                 this.pageNum += 1;
                 history.pushState({}, "page", "?page=" + this.pageNum);
                 getData(urls.topStories(this.pageNum), false);
