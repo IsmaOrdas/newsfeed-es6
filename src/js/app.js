@@ -26,6 +26,7 @@ export class App {
         
         this.contentArea.addEventListener("click", (ev) => {
             let element = ev.target;
+            ev.preventDefault();
             
             if (element.matches(".c-story__comments-link")) {
                 let itemId = element.dataset.item;

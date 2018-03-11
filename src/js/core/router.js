@@ -10,7 +10,6 @@ export class Router {
     }
 
     update () {
-        console.log("update")
         if (!this._url) {    
             getData(urls.topStories(this._page), true);
         } else if (this._url.includes("id")) {

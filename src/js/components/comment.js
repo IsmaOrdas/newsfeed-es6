@@ -1,15 +1,5 @@
 import * as DOM  from "../core/dom-api.js";
 
-export const commentsPage = (children) => {
-    let page = DOM.div({"class": "comments-page"});
-
-    if (children) {
-        DOM.appendChildren(page, children);
-    }
-    
-    return page;
-}
-
 export const commentElement = (data) => {
     return DOM.div(
         {"class": "c-comment"},

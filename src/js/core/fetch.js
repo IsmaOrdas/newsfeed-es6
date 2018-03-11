@@ -2,6 +2,8 @@ import { urls } from "./urls.js";
 import * as DOM  from "./dom-api.js";
 import { articleElement } from "../components/article";
 import * as comments from "../components/comment";
+import {commentsPage} from "../views/commentsPage";
+import {mainPage} from "../views/mainPage";
 
 export const createRequest = (url) => {
     
@@ -17,7 +19,6 @@ export const createRequest = (url) => {
 }
 
 export const getData = (url, clearView = false) => {
-    let listEl = DOM.div({"class": "c-list"});
     let request = createRequest(url);
     
     fetch(request)
@@ -30,22 +31,8 @@ export const getData = (url, clearView = false) => {
 
         response.json()
         .then((data) => {
-            let appContentWrap = document.querySelector(".app-content");
-
-            let loadMoreBtn = DOM.button({"class": "load-more", "textContent": "Load more"});
-            loadMoreBtn.textContent = "Load more";
-
-            clearView && DOM.clearMainView();
-
-            data.map(obj => {
-                listEl.appendChild(articleElement(obj));
-            });
-
-            if (appContentWrap.querySelector(".load-more")) {
-                appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
-            } else {
-                DOM.appendChildren(appContentWrap, [listEl, loadMoreBtn]);
-            }
+            
+            mainPage(data, clearView);
             
         })
 
@@ -57,7 +44,6 @@ export const getData = (url, clearView = false) => {
 }
 
 export const getComments = (url) => {
-    let listComments = DOM.list({ "class": "c-list c-comments__list" });
     let request = createRequest(url);
 
     fetch(request)
@@ -70,16 +56,8 @@ export const getComments = (url) => {
 
         response.json()
         .then((data) => {
-           
-            DOM.clearMainView();
-                        
-            data.comments.map((el) => {
-                listComments.appendChild(comments.commentElement(el));
-            });
 
-            let commentsPageEl = comments.commentsPage([articleElement(data), listComments]);
-
-            document.querySelector(".app-content").appendChild(commentsPageEl);
+            commentsPage(data)
 
         })
 
