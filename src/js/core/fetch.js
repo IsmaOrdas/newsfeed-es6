@@ -18,6 +18,18 @@ export const createRequest = (url) => {
 
 }
 
+export async function pruebaData (url) {
+    try {
+        let request = createRequest(url);
+        
+        let response = await fetch(request);
+        return await response.json();
+        
+    } catch (error) {
+        console.log("fetch error", error)
+    }
+}
+
 export const getData = (url, clearView = false) => {
     let request = createRequest(url);
     
@@ -31,8 +43,10 @@ export const getData = (url, clearView = false) => {
 
         response.json()
         .then((data) => {
-            
-            mainPage(data, clearView);
+            console.log(data)
+            // mainPage(data, clearView);
+
+            return data;
             
         })
 

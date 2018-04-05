@@ -15,8 +15,7 @@ export class App {
     }
 
     init() {
-        this.app.insertBefore(createHeader(), this.contentArea);
-        
+        this.app.insertBefore(createHeader(), this.contentArea);        
         this.events();  
     }
 
@@ -25,8 +24,8 @@ export class App {
         window.addEventListener("popstate", this.router.update, false);
         
         this.contentArea.addEventListener("click", (ev) => {
-            let element = ev.target;
             ev.preventDefault();
+            let element = ev.target;
             
             if (element.matches(".c-story__comments-link")) {
                 let itemId = element.dataset.item;

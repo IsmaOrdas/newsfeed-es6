@@ -1,5 +1,6 @@
 import { getComments, getData } from "./fetch";
 import { urls, getParamFromUrl } from "./urls";
+import {MainPageClass} from "../views/mainPage";
 
 export class Router {
 
@@ -10,14 +11,20 @@ export class Router {
     }
 
     update () {
-        if (!this._url) {    
-            getData(urls.topStories(this._page), true);
+
+        if (!this._url) {
+            let page = new MainPageClass();
+            page.update(urls.topStories(this._page))
         } else if (this._url.includes("id")) {
             let id = getParamFromUrl(this._url, "id");
             getComments(urls.item(id));
         } else if (this._url.includes("page")) {
             let page = getParamFromUrl(this._url, "page");
-            getData(urls.topStories(page), true);
+
+            for (let i = 1; i <= page; i++) {
+                getData(urls.topStories(i), false);        
+            }
+            
         }
 
     }
