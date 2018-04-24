@@ -1,47 +1,42 @@
 import * as DOM  from "../core/dom-api.js";
 import { articleElement } from "../components/article";
-import {getData, pruebaData} from "../core/fetch";
+import {getData, pruebaData, getComments} from "../core/fetch";
+import { urls, getParamFromUrl } from "../core/urls";
 
-export const mainPage = (data, clearView) => {
-    let listEl = DOM.div({"class": "c-list"});
-
-    let appContentWrap = document.querySelector(".app-content");
-
-    let loadMoreBtn = DOM.button({"class": "load-more", "textContent": "Load more"});
-    loadMoreBtn.textContent = "Load more";
-
-    clearView && DOM.clearMainView();
-
-    data.map(obj => {
-        listEl.appendChild(articleElement(obj));
-    });
-
-    if (appContentWrap.querySelector(".load-more")) {
-        appContentWrap.insertBefore(listEl, appContentWrap.querySelector(".load-more"));
-    } else {
-        DOM.appendChildren(appContentWrap, [listEl, loadMoreBtn]);
-    }
-
-}
-
-export class MainPageClass {
+export class HomePage {
     constructor() {
+        this.pageNum = 1;
         this.appContentHook = document.getElementById("app-content");
-        this.list = null;
+        this.homePageEl = DOM.div({"id": "o-homepage"});
+        this.list = DOM.div({"class": "c-list"});
         this.init();
     }
 
     init() {
-        
-        console.log("init page")
-        this.createNewsList();
-        // this.update()
+        console.log("init")
+        this.clearView()
+        this.update(urls.topStories(this.pageNum), false);
+        this.events();
+    }
+
+    events() {
+        this.homePageEl.addEventListener("click", (ev) => {
+            const elTarget = ev.target;
+
+            if (elTarget.matches(".load-more")) {
+                this.pageNum += 1;
+                history.pushState({}, "page", "?page=" + this.pageNum);
+                this.update(urls.topStories(this.pageNum), false);
+            } else if (elTarget.matches(".c-story__comments-link")) {
+                const itemId = elTarget.dataset.item;
+                history.pushState({}, "storyId", "?id=" + itemId);
+                getComments(urls.item(itemId))
+            } 
+        });
     }
 
     async update(url) {
         let data = await pruebaData(url);
-        console.log("datos", data)
-        // return data;
         this.fillView(data);
     }
 
@@ -49,21 +44,19 @@ export class MainPageClass {
         data.map(obj => {
             this.list.appendChild(articleElement(obj));
         });
-        this.appContentHook.appendChild(this.list);
-        console.log(this.list)
-    }
 
-    createNewsList() {
-        this.list = DOM.div({"class": "c-list"});
+        DOM.appendChildren(this.homePageEl, [this.list, this.createLoadButton()]);
+        this.appContentHook.appendChild(this.homePageEl)
     }
 
     createLoadButton() {
-        let loadMoreBtn = DOM.button({"class": "load-more", "textContent": "Load more"});
+        let loadMoreBtn = DOM.button({"class": "load-more"});
         loadMoreBtn.textContent = "Load more";
         return loadMoreBtn;
     }
 
     clearView() {
-        clearView && DOM.clearMainView();
+        DOM.clearMainView();
     }
+    
 }

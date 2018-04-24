@@ -3,7 +3,6 @@ import * as DOM  from "./dom-api.js";
 import { articleElement } from "../components/article";
 import * as comments from "../components/comment";
 import {commentsPage} from "../views/commentsPage";
-import {mainPage} from "../views/mainPage";
 
 export const createRequest = (url) => {
     
@@ -44,7 +43,6 @@ export const getData = (url, clearView = false) => {
         response.json()
         .then((data) => {
             console.log(data)
-            // mainPage(data, clearView);
 
             return data;
             
