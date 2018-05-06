@@ -41,17 +41,16 @@ export class HomePage {
     }
 
     fillView(data) {
-        console.log("fillView")
+        let buttonExists = this.homePageEl.querySelector(".load-more");
+
         data.map(obj => {
             this.list.appendChild(articleElement(obj));
         });
 
         DOM.appendChildren(this.homePageEl, [this.list]);
-        if (this.homePageEl.querySelector(".load-more")) {
-            this.homePageEl.appendChild(this.homePageEl.querySelector(".load-more"));
-        } else {
-            this.homePageEl.appendChild(this.createLoadButton())
-        }
+
+        this.homePageEl.appendChild(buttonExists ? this.homePageEl.querySelector(".load-more") : this.createLoadButton());
+
         this.appContentHook.appendChild(this.homePageEl)
     }
 
