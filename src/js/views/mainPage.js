@@ -41,11 +41,17 @@ export class HomePage {
     }
 
     fillView(data) {
+        console.log("fillView")
         data.map(obj => {
             this.list.appendChild(articleElement(obj));
         });
 
-        DOM.appendChildren(this.homePageEl, [this.list, this.createLoadButton()]);
+        DOM.appendChildren(this.homePageEl, [this.list]);
+        if (this.homePageEl.querySelector(".load-more")) {
+            this.homePageEl.appendChild(this.homePageEl.querySelector(".load-more"));
+        } else {
+            this.homePageEl.appendChild(this.createLoadButton())
+        }
         this.appContentHook.appendChild(this.homePageEl)
     }
 
