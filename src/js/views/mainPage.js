@@ -13,9 +13,8 @@ export class HomePage {
     }
 
     init() {
-        console.log("init")
         this.clearView()
-        this.update(urls.topStories(this.pageNum), false);
+        // this.update(urls.topStories(this.pageNum), false);
         this.events();
     }
 
@@ -35,8 +34,9 @@ export class HomePage {
         });
     }
 
-    async update(url) {
-        let data = await pruebaData(url);
+    async update(url = false) {
+        let data = await pruebaData(url ? url : urls.topStories(this.pageNum));
+        // console.log(data)
         this.fillView(data);
     }
 

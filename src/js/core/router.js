@@ -11,21 +11,25 @@ export class Router {
     }
 
     update () {
+        let homePageObj = false;
 
         if (!this._url) {
-            console.log("entra")
-            new HomePage();
-            // page.update(urls.topStories(this._page))
+            let homePageObj = new HomePage();
+            homePageObj.update();
 
         } else if (this._url.includes("id")) {
             let id = getParamFromUrl(this._url, "id");
             getComments(urls.item(id));
             
         } else if (this._url.includes("page")) {
-            let page = getParamFromUrl(this._url, "page");
+            if (homePageObj instanceof HomePage === false) {
+                homePageObj = new HomePage();
+            }
 
+            let page = getParamFromUrl(this._url, "page");
+            homePageObj.clearView();
             for (let i = 1; i <= page; i++) {
-                getData(urls.topStories(i), false);        
+                homePageObj.update(urls.topStories(i))     
             }
             
         }

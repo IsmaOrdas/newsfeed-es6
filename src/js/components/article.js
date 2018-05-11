@@ -2,11 +2,12 @@ import { article } from "../core/dom-api.js";
 import { urls } from "../core/urls";
 
 export const articleElement = (data) => {
+    console.log(data.domain)
     return article(
         {"class": "c-story", "data-item": data.id}, 
         `<div class="c-story__title">
             <a class="c-story__link" href="${data.url}" target="_blank" rel="noopener">${data.title}</a>
-            <a href="https://www.${data.domain}" class="c-story__source" target="_blank" rel="noopener"> (${data.domain})</a>
+            ${typeof data.domain !== "undefined" ? buildExternalLink(data.domain) : ""}
         </div>
         <div class="c-story__meta">
             <span class="c-story__points">${data.points} points</span>
@@ -15,3 +16,5 @@ export const articleElement = (data) => {
         </div>`
     );
 }
+
+const buildExternalLink = (domain) => `<a href="https://www.${domain}" class="c-story__source" target="_blank" rel="noopener"> (${domain})</a>`
