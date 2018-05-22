@@ -5,7 +5,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
 module.exports = {
-    watch: true,
+    watch: false,
     entry: {
         main: ['babel-polyfill', './src/js/app.js','./src/sass/main.sass']
     },
