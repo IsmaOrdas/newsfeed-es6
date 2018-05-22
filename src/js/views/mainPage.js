@@ -1,21 +1,28 @@
 import * as DOM  from "../core/dom-api.js";
+import {loaderButton} from "../components/loaderButton";
 import { articleElement } from "../components/article";
 import {getData, pruebaData, getComments} from "../core/fetch";
 import { urls, getParamFromUrl } from "../core/urls";
 
 export class HomePage {
+
     constructor() {
         this.pageNum = 1;
         this.appContentHook = document.getElementById("app-content");
-        this.homePageEl = DOM.div({"id": "o-homepage"});
-        this.list = DOM.div({"class": "c-list"});
+        this.homePageEl = null;
+        this.list = null;
         this.init();
     }
 
     init() {
-        this.clearView()
-        // this.update(urls.topStories(this.pageNum), false);
+        this.initElements();
+        this.clearView();
         this.events();
+    }
+
+    initElements() {
+        this.homePageEl = DOM.div({"id": "o-homepage"});
+        this.list = DOM.div({"class": "c-list"});
     }
 
     events() {
@@ -49,15 +56,9 @@ export class HomePage {
 
         DOM.appendChildren(this.homePageEl, [this.list]);
 
-        this.homePageEl.appendChild(buttonExists ? this.homePageEl.querySelector(".load-more") : this.createLoadButton());
+        this.homePageEl.appendChild(buttonExists ? this.homePageEl.querySelector(".load-more") : loaderButton());
 
         this.appContentHook.appendChild(this.homePageEl)
-    }
-
-    createLoadButton() {
-        let loadMoreBtn = DOM.button({"class": "load-more"});
-        loadMoreBtn.textContent = "Load more";
-        return loadMoreBtn;
     }
 
     clearView() {

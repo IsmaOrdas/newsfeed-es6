@@ -2,7 +2,6 @@ import { article } from "../core/dom-api.js";
 import { urls } from "../core/urls";
 
 export const articleElement = (data) => {
-    console.log(data.domain)
     return article(
         {"class": "c-story", "data-item": data.id}, 
         `<div class="c-story__title">

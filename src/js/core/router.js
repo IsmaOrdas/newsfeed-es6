@@ -6,7 +6,6 @@ export class Router {
 
     constructor() {
         this._url = window.location.search;
-        this._page = 1;
         this.update();
     }
 
