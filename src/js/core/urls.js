@@ -1,4 +1,4 @@
-let apiHost = "http://node-hnapi.herokuapp.com";
+let apiHost = "https://node-hnapi.herokuapp.com";
 
 export const urls = {
     "bestStories": () => `${apiHost}/best`,
